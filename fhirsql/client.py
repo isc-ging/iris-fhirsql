@@ -29,6 +29,14 @@ class FHIRSQLClient:
         # Default to environment variables if not provided
         username = username or os.getenv('IRISUSERNAME')
         password = password or os.getenv('IRISPASSWORD')
+
+        # Validate that credentials are available
+        if not username or not password:
+            raise ValueError(
+                "Credentials required: either pass username/password parameters or set "
+                "IRISUSERNAME and IRISPASSWORD environment variables"
+            )
+
         self.session = requests.Session()
 
         if username and password:
