@@ -49,6 +49,15 @@ class TransformSpecResource(BaseResource):
             payload.update(spec_data)
 
         data = self._make_request("POST", "/transformspec", json=payload)
+
+        # API may return a list, handle both cases
+        if isinstance(data, list):
+            for item in data:
+                if item.get("name") == name:
+                    return TransformSpec.from_dict(item)
+            if data:
+                return TransformSpec.from_dict(data[-1])
+
         return TransformSpec.from_dict(data)
 
     def create_from_builder(self, builder) -> TransformSpec:

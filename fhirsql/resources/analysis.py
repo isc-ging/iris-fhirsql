@@ -66,6 +66,12 @@ class AnalysisResource(BaseResource):
         analysis = Analysis(fhir_repository_id=repository_id, max_distinct=max_distinct,
                           selectivity_percentage=selectivity_percentage)
         data = self._make_request("POST", "/analysis", json=analysis.to_dict())
+
+        # API may return a list, handle both cases
+        if isinstance(data, list):
+            if data:
+                return Analysis.from_dict(data[-1])  # Return the last (newly created) one
+
         return Analysis.from_dict(data)
 
     def update(self, task_id: str, action: str = "resume") -> Analysis:

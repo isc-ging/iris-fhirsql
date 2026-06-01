@@ -29,6 +29,16 @@ class RepositoryResource(BaseResource):
             ssl_config=ssl_config
         )
         data = self._make_request("POST", "/fhirrepository", json=repo.to_dict())
+
+        # API returns a list of all repositories, find the one we just created by name
+        if isinstance(data, list):
+            for item in data:
+                if item.get("name") == name:
+                    return Repository.from_dict(item)
+            # If not found, return the last one (likely the newly created one)
+            if data:
+                return Repository.from_dict(data[-1])
+
         return Repository.from_dict(data)
 
     def update(self, repository: Repository) -> Repository:

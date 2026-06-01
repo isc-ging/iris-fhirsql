@@ -50,6 +50,16 @@ class CredentialResource(BaseResource):
 
         cred = Credential(system_name=system_name, username=username, password=password)
         data = self._make_request("POST", "/credentials", json=cred.to_dict())
+
+        # API returns a list of all credentials, find the one we just created by system_name
+        if isinstance(data, list):
+            for item in data:
+                if item.get("systemName") == system_name:
+                    return Credential.from_dict(item)
+            # If not found, return the last one (likely the newly created one)
+            if data:
+                return Credential.from_dict(data[-1])
+
         return Credential.from_dict(data)
 
     def update(self, credential: Credential) -> Credential:

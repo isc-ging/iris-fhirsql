@@ -59,6 +59,15 @@ class ProjectionResource(BaseResource):
             users=users or []
         )
         data = self._make_request("POST", "/projection", json=projection.to_dict())
+
+        # API may return a list, handle both cases
+        if isinstance(data, list):
+            for item in data:
+                if item.get("packageName") == package_name:
+                    return Projection.from_dict(item)
+            if data:
+                return Projection.from_dict(data[-1])
+
         return Projection.from_dict(data)
 
     def update(self, projection_id: str, spec_id: Optional[str] = None,
