@@ -32,7 +32,7 @@ repo = client.repositories.create(
     host="localhost",
     port=52773,
     fhir_url="/fhir/r4",
-    credentials_id=cred.id
+    credentials_name=cred.system_name  # Use system_name, not id
 )
 print(f"   ✓ Created repository: {repo.id}\n")
 

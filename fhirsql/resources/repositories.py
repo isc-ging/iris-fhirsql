@@ -13,7 +13,28 @@ class RepositoryResource(BaseResource):
         return Repository.from_dict(data)
 
     def create(self, name: str, host: str, port: int, fhir_url: str,
-               credentials_id: Optional[str] = None, ssl_config: Optional[str] = None) -> Repository:
+               credentials_name: Optional[str] = None, ssl_config: Optional[str] = None) -> Repository:
+        """
+        Create a FHIR repository configuration.
+
+        Args:
+            name: Display name for this repository
+            host: Hostname (e.g., "localhost")
+            port: Port number (e.g., 52773)
+            fhir_url: FHIR endpoint path (e.g., "/fhir/r4")
+            credentials_name: Credential system_name (not id!) to use for authentication
+            ssl_config: Optional SSL configuration name
+
+        Example:
+            cred = client.credentials.create(system_name="MyCredentials")
+            repo = client.repositories.create(
+                name="My FHIR Server",
+                host="localhost",
+                port=52773,
+                fhir_url="/fhir/r4",
+                credentials_name=cred.system_name  # or just "MyCredentials"
+            )
+        """
         if not all([name, host, fhir_url]):
             raise ValidationError("name, host, and fhir_url required")
 
@@ -25,7 +46,7 @@ class RepositoryResource(BaseResource):
             hostname=host,
             port=str(port),
             repository_url=fhir_url,
-            credentials_id=credentials_id,
+            credentials_id=credentials_name,  # API expects system_name, not id
             ssl_config=ssl_config
         )
         data = self._make_request("POST", "/fhirrepository", json=repo.to_dict())

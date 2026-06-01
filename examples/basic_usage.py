@@ -34,8 +34,10 @@ print(f"Created credential: {cred.id}")
 print("\nStep 2: Creating repository...")
 repo = client.repositories.create(
     name="Test FHIR Server",
-    url="http://localhost:52773/fhir/r4",
-    credentials_id=cred.id
+    host="localhost",
+    port=52773,
+    fhir_url="/fhir/r4",
+    credentials_name=cred.system_name  # Use system_name, not id
 )
 print(f"Created repository: {repo.id}")
 
