@@ -12,12 +12,22 @@ class RepositoryResource(BaseResource):
         data = self._make_request("GET", "/fhirrepository", params={"ID": repository_id})
         return Repository.from_dict(data)
 
-    def create(self, name: str, url: str, credentials_id: Optional[str] = None,
-               ssl_config: Optional[str] = None) -> Repository:
-        if not all([name, url]):
-            raise ValidationError("name and url required")
+    def create(self, name: str, host: str, port: int, fhir_url: str,
+               credentials_id: Optional[str] = None, ssl_config: Optional[str] = None) -> Repository:
+        if not all([name, host, fhir_url]):
+            raise ValidationError("name, host, and fhir_url required")
 
-        repo = Repository(name=name, url=url, credentials_id=credentials_id, ssl_config=ssl_config)
+        if not isinstance(port, int) or port <= 0 or port > 65535:
+            raise ValidationError("port must be an integer between 1 and 65535")
+
+        repo = Repository(
+            name=name,
+            hostname=host,
+            port=str(port),
+            repository_url=fhir_url,
+            credentials_id=credentials_id,
+            ssl_config=ssl_config
+        )
         data = self._make_request("POST", "/fhirrepository", json=repo.to_dict())
         return Repository.from_dict(data)
 

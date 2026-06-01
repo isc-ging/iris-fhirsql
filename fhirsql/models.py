@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, List
 
 @dataclass
 class Credential:
@@ -29,7 +29,9 @@ class Credential:
 class Repository:
     id: Optional[str] = None
     name: Optional[str] = None
-    url: Optional[str] = None
+    hostname: Optional[str] = None
+    port: Optional[str] = None
+    repository_url: Optional[str] = None
     credentials_id: Optional[str] = None
     ssl_config: Optional[str] = None
 
@@ -37,8 +39,10 @@ class Repository:
         return {k: v for k, v in {
             "id": self.id,
             "name": self.name,
-            "url": self.url,
-            "credentialsID": self.credentials_id,
+            "hostname": self.hostname,
+            "port": self.port,
+            "repositoryURL": self.repository_url,
+            "credentialsId": self.credentials_id,
             "sslConfig": self.ssl_config
         }.items() if v is not None}
 
@@ -47,15 +51,17 @@ class Repository:
         return cls(
             id=data.get("id"),
             name=data.get("name"),
-            url=data.get("url"),
-            credentials_id=data.get("credentialsID"),
+            hostname=data.get("hostname"),
+            port=data.get("port"),
+            repository_url=data.get("repositoryURL"),
+            credentials_id=data.get("credentialsId"),
             ssl_config=data.get("sslConfig")
         )
 
 @dataclass
 class Analysis:
     id: Optional[str] = None
-    fhir_host: Optional[str] = None
+    fhir_repository_id: Optional[int] = None
     max_distinct: Optional[int] = None
     selectivity_percentage: Optional[int] = None
     status: Optional[str] = None
@@ -63,7 +69,7 @@ class Analysis:
     def to_dict(self):
         return {k: v for k, v in {
             "id": self.id,
-            "FHIRHost": self.fhir_host,
+            "fhirRepositoryId": self.fhir_repository_id,
             "maxDistinct": self.max_distinct,
             "selectivityPercentage": self.selectivity_percentage,
             "status": self.status
@@ -73,7 +79,7 @@ class Analysis:
     def from_dict(cls, data):
         return cls(
             id=data.get("id") or data.get("TASKID"),
-            fhir_host=data.get("FHIRHost"),
+            fhir_repository_id=data.get("fhirRepositoryId"),
             max_distinct=data.get("maxDistinct"),
             selectivity_percentage=data.get("selectivityPercentage"),
             status=data.get("status")
@@ -83,8 +89,8 @@ class Analysis:
 class TransformSpec:
     id: Optional[str] = None
     name: Optional[str] = None
-    analysis_id: Optional[str] = None
-    spec_data: Optional[Dict] = None
+    scan_id: Optional[int] = None
+    spec_data: Optional[Dict] = None  # Should contain 'resources' array with {resourceType, columns[]}
 
     def to_dict(self):
         data = {}
@@ -92,8 +98,8 @@ class TransformSpec:
             data["id"] = self.id
         if self.name:
             data["name"] = self.name
-        if self.analysis_id:
-            data["analysisID"] = self.analysis_id
+        if self.scan_id:
+            data["scanId"] = self.scan_id
         if self.spec_data:
             data.update(self.spec_data)
         return data
@@ -103,7 +109,7 @@ class TransformSpec:
         return cls(
             id=data.get("id") or data.get("SPECID"),
             name=data.get("name"),
-            analysis_id=data.get("analysisID"),
+            scan_id=data.get("scanId"),
             spec_data=data
         )
 
@@ -112,13 +118,19 @@ class Projection:
     id: Optional[str] = None
     name: Optional[str] = None
     spec_id: Optional[str] = None
+    fhir_repository_id: Optional[int] = None
+    package_name: Optional[str] = None
+    users: Optional[List[str]] = None
     status: Optional[str] = None
 
     def to_dict(self):
         return {k: v for k, v in {
             "id": self.id,
             "name": self.name,
-            "specID": self.spec_id,
+            "specificationId": self.spec_id,
+            "fhirRepositoryId": self.fhir_repository_id,
+            "packageName": self.package_name,
+            "users": self.users,
             "status": self.status
         }.items() if v is not None}
 
@@ -127,6 +139,9 @@ class Projection:
         return cls(
             id=data.get("id"),
             name=data.get("name"),
-            spec_id=data.get("specID"),
+            spec_id=data.get("specificationId"),
+            fhir_repository_id=data.get("fhirRepositoryId"),
+            package_name=data.get("packageName"),
+            users=data.get("users"),
             status=data.get("status")
         )

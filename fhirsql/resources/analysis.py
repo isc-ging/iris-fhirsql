@@ -12,12 +12,58 @@ class AnalysisResource(BaseResource):
         data = self._make_request("GET", "/analysis", params={"ID": task_id})
         return Analysis.from_dict(data)
 
-    def create(self, fhir_host: str, max_distinct: Optional[int] = None,
+    def create(self, repository_id: int, max_distinct: Optional[int] = None,
                selectivity_percentage: Optional[int] = None) -> Analysis:
-        if not fhir_host:
-            raise ValidationError("fhir_host required")
+        """
+        Create and launch a new FHIR repository analysis task.
 
-        analysis = Analysis(fhir_host=fhir_host, max_distinct=max_distinct,
+        The analysis process scans a FHIR repository to discover resource types,
+        fields, and data patterns. Results feed into Transformation Specifications.
+
+        Workflow:
+        1. Create/select a Repository using client.repositories.create() or list()
+        2. Launch Analysis with the Repository ID
+        3. Poll status using get() or update() until complete
+        4. Use Analysis ID when creating Transform Specs
+
+        Args:
+            repository_id: ID of the FHIR Repository to analyze (from Repository.id).
+                          Obtain this from client.repositories.create() or list().
+            max_distinct: Maximum number of distinct values to collect per field.
+                         Used for data profiling and selectivity analysis.
+            selectivity_percentage: Selectivity threshold percentage (0-100).
+                                   Fields with selectivity above this threshold
+                                   are candidates for indexing.
+
+        Returns:
+            Analysis: Analysis object with task ID and initial status.
+                     Use analysis.id to track status and retrieve results.
+
+        Raises:
+            ValidationError: If repository_id is missing or selectivity_percentage
+                           is out of range (0-100).
+
+        Example:
+            repo = client.repositories.create(name="FHIR Server", url="http://...")
+            analysis = client.analysis.create(
+                repository_id=repo.id,
+                max_distinct=1000,
+                selectivity_percentage=50
+            )
+            # Poll until complete
+            while analysis.status != "complete":
+                analysis = client.analysis.get(analysis.id)
+            # Get results to inform transform spec design
+            results = client.analysis.get_results(analysis.id)
+        """
+        if not repository_id:
+            raise ValidationError("repository_id required")
+
+        if selectivity_percentage is not None:
+            if not (0 <= selectivity_percentage <= 100):
+                raise ValidationError("selectivity_percentage must be between 0 and 100")
+
+        analysis = Analysis(fhir_repository_id=repository_id, max_distinct=max_distinct,
                           selectivity_percentage=selectivity_percentage)
         data = self._make_request("POST", "/analysis", json=analysis.to_dict())
         return Analysis.from_dict(data)
