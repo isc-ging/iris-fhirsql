@@ -1,0 +1,498 @@
+{
+  "name": "READYAITransform",
+  "scanId": 1,
+  "description": "",
+  "resources": [
+    {
+      "resourceType": "Patient",
+      "columns": [
+        {
+          "name": "GivenName",
+          "type": "String",
+          "path": "Patient.name.given",
+          "index": false,
+          "dataIndex": false,
+          "length": 10,
+          "RENAMED": "PatientNameGiven"
+        },
+        {
+          "name": "FamilyName",
+          "type": "String",
+          "path": "Patient.name.family",
+          "index": false,
+          "dataIndex": false,
+          "length": 50,
+          "RENAMED": "PatientNameFamily"
+        },
+        {
+          "name": "Gender",
+          "type": "String",
+          "path": "Patient.gender",
+          "index": true,
+          "dataIndex": false,
+          "length": 10,
+          "RENAMED": "PatientGender"
+        },
+        {
+          "name": "BirthPlaceCity",
+          "type": "String",
+          "path": "Patient.extension.where(url = 'http://hl7.org/fhir/StructureDefinition/patient-birthPlace').valueAddress.city",
+          "index": false,
+          "dataIndex": false,
+          "length": 50,
+          "RENAMED": "PatientPatientBirthPlaceValueAddressCity"
+        },
+        {
+          "name": "BirthPlaceCountry",
+          "type": "String",
+          "path": "Patient.extension.where(url = 'http://hl7.org/fhir/StructureDefinition/patient-birthPlace').valueAddress.country",
+          "index": false,
+          "dataIndex": false,
+          "length": 10,
+          "RENAMED": "PatientPatientBirthPlaceValueAddressCountry"
+        },
+        {
+          "name": "City",
+          "type": "String",
+          "path": "Patient.address.city",
+          "index": false,
+          "dataIndex": false,
+          "length": 50,
+          "RENAMED": "PatientAddressCity"
+        },
+        {
+          "name": "PostalCode",
+          "type": "String",
+          "path": "Patient.address.postalCode",
+          "index": false,
+          "dataIndex": false,
+          "length": 10,
+          "RENAMED": "PatientAddressPostalCode"
+        },
+        {
+          "name": "Country",
+          "type": "String",
+          "path": "Patient.address.country",
+          "index": false,
+          "dataIndex": false,
+          "length": 10,
+          "RENAMED": "PatientAddressCountry"
+        },
+        {
+          "name": "BirthDate",
+          "type": "String",
+          "path": "Patient.birthDate",
+          "index": false,
+          "dataIndex": false,
+          "length": 10,
+          "RENAMED": "PatientBirthDate"
+        }
+      ]
+    },
+    {
+      "resourceType": "Condition",
+      "columns": [
+        {
+          "name": "Patient",
+          "type": "String",
+          "path": "Condition.subject.reference",
+          "index": true,
+          "dataIndex": false,
+          "length": 50,
+          "RENAMED": "ConditionSubjectReference"
+        },
+        {
+          "name": "Status",
+          "type": "String",
+          "path": "Condition.clinicalStatus.coding.code",
+          "index": true,
+          "dataIndex": false,
+          "length": 10
+        },
+        {
+          "name": "Description",
+          "type": "String",
+          "path": "Condition.code.text",
+          "index": true,
+          "dataIndex": false,
+          "length": 100
+        },
+        {
+          "name": "SnomedCode",
+          "type": "String",
+          "path": "Condition.code.coding.code",
+          "index": true,
+          "dataIndex": false,
+          "length": 50
+        }
+      ]
+    },
+    {
+      "resourceType": "Observation",
+      "columns": [
+        {
+          "name": "CategoryCode",
+          "type": "String",
+          "path": "Observation.category.coding.code",
+          "index": true,
+          "dataIndex": false,
+          "length": 50,
+          "RENAMED": "ObservationCategoryCodingCode"
+        },
+        {
+          "name": "Description",
+          "type": "String",
+          "path": "Observation.code.coding.display",
+          "index": true,
+          "dataIndex": false,
+          "length": 250
+        },
+        {
+          "name": "Code",
+          "type": "String",
+          "path": "Observation.code.coding.code",
+          "index": true,
+          "dataIndex": false,
+          "length": 10,
+          "RENAMED": "ObservationCodeCodingCode"
+        },
+        {
+          "name": "ValueQuantity",
+          "type": "Number",
+          "path": "Observation.valueQuantity.value",
+          "index": true,
+          "dataIndex": false
+        },
+        {
+          "name": "ValueUOM",
+          "type": "String",
+          "path": "Observation.valueQuantity.unit",
+          "index": false,
+          "dataIndex": false,
+          "length": 50,
+          "RENAMED": "ObservationValueQuantityUnit"
+        },
+        {
+          "name": "IssueDateTime",
+          "type": "String",
+          "path": "Observation.issued",
+          "index": false,
+          "dataIndex": false,
+          "length": 50,
+          "RENAMED": "ObservationIssued"
+        },
+        {
+          "name": "Patient",
+          "type": "String",
+          "path": "Observation.subject.reference",
+          "index": true,
+          "dataIndex": false,
+          "length": 50,
+          "RENAMED": "ObservationSubjectReference"
+        }
+      ]
+    },
+    {
+      "resourceType": "DocumentReference",
+      "columns": [
+        {
+          "name": "Patient",
+          "type": "String",
+          "path": "DocumentReference.subject.reference",
+          "index": false,
+          "dataIndex": false,
+          "length": 10,
+          "RENAMED": "DocumentReferenceSubjectReference"
+        },
+        {
+          "name": "AttachmentData",
+          "type": "String",
+          "path": "DocumentReference.content.attachment.data",
+          "index": false,
+          "dataIndex": false,
+          "length": "",
+          "RENAMED": "DocumentReferenceContentAttachmentData"
+        },
+        {
+          "name": "ContentType",
+          "type": "String",
+          "path": "DocumentReference.content.attachment.contentType",
+          "index": false,
+          "dataIndex": false,
+          "length": 50,
+          "RENAMED": "DocumentReferenceContentAttachmentContentType"
+        }
+      ]
+    },
+    {
+      "resourceType": "Encounter",
+      "columns": [
+        {
+          "name": "EncounterParticipantPeriodStart",
+          "type": "String",
+          "path": "Encounter.participant.period.start",
+          "index": false,
+          "dataIndex": false,
+          "length": 50
+        },
+        {
+          "name": "EncounterParticipantPeriodEnd",
+          "type": "String",
+          "path": "Encounter.participant.period.end",
+          "index": false,
+          "dataIndex": false,
+          "length": 50
+        },
+        {
+          "name": "EncounterTypeCodingCode",
+          "type": "String",
+          "path": "Encounter.type.coding.code",
+          "index": false,
+          "dataIndex": false,
+          "length": 10
+        },
+        {
+          "name": "EncounterTypeCodingDisplay",
+          "type": "String",
+          "path": "Encounter.type.coding.display",
+          "index": false,
+          "dataIndex": false,
+          "length": 100
+        },
+        {
+          "name": "Patient",
+          "type": "String",
+          "path": "Encounter.subject.reference",
+          "index": false,
+          "dataIndex": false,
+          "length": 50,
+          "RENAMED": "EncounterSubjectReference"
+        },
+        {
+          "name": "EncounterReasonCode",
+          "type": "String",
+          "path": "Encounter.reasonCode.coding.code",
+          "index": false,
+          "dataIndex": false,
+          "length": 50,
+          "RENAMED": "EncounterReasonCodeCodingCode"
+        },
+        {
+          "name": "EncounterReasonDisplay",
+          "type": "String",
+          "path": "Encounter.reasonCode.coding.display",
+          "index": false,
+          "dataIndex": false,
+          "length": 100,
+          "RENAMED": "EncounterReasonCodeCodingDisplay"
+        },
+        {
+          "name": "HospitalizationDischargeDisplay",
+          "type": "String",
+          "path": "Encounter.hospitalization.dischargeDisposition.coding.display",
+          "index": false,
+          "dataIndex": false,
+          "length": 100,
+          "RENAMED": "EncounterHospitalizationDischargeDispositionCodingDisplay"
+        },
+        {
+          "name": "EncounterServiceProviderDisplay",
+          "type": "String",
+          "path": "Encounter.serviceProvider.display",
+          "index": false,
+          "dataIndex": false,
+          "length": 100
+        }
+      ],
+      "subTables": []
+    },
+    {
+      "resourceType": "AllergyIntolerance",
+      "columns": [
+        {
+          "name": "Patient",
+          "type": "String",
+          "path": "AllergyIntolerance.patient.reference",
+          "index": false,
+          "dataIndex": false,
+          "length": 50,
+          "RENAMED": "AllergyIntolerancePatientReference"
+        },
+        {
+          "name": "Criticality",
+          "type": "String",
+          "path": "AllergyIntolerance.criticality",
+          "index": false,
+          "dataIndex": false,
+          "length": 10,
+          "RENAMED": "AllergyIntoleranceCriticality"
+        },
+        {
+          "name": "Category",
+          "type": "String",
+          "path": "AllergyIntolerance.category",
+          "index": false,
+          "dataIndex": false,
+          "length": 10,
+          "RENAMED": "AllergyIntoleranceCategory"
+        },
+        {
+          "name": "Code",
+          "type": "String",
+          "path": "AllergyIntolerance.code.coding.code",
+          "index": false,
+          "dataIndex": false,
+          "length": 10,
+          "RENAMED": "AllergyIntoleranceCodeCodingCode"
+        },
+        {
+          "name": "AllergyDescription",
+          "type": "String",
+          "path": "AllergyIntolerance.code.coding.display",
+          "index": false,
+          "dataIndex": false,
+          "length": 50,
+          "RENAMED": "AllergyIntoleranceCodeCodingDisplay"
+        },
+        {
+          "name": "VerificationStatus",
+          "type": "String",
+          "path": "AllergyIntolerance.verificationStatus.coding.code",
+          "index": false,
+          "dataIndex": false,
+          "length": 10,
+          "RENAMED": "AllergyIntoleranceVerificationStatusCodingCode"
+        },
+        {
+          "name": "Status",
+          "type": "String",
+          "path": "AllergyIntolerance.clinicalStatus.coding.code",
+          "index": false,
+          "dataIndex": false,
+          "length": 10,
+          "RENAMED": "AllergyIntoleranceClinicalStatusCodingCode"
+        }
+      ]
+    },
+    {
+      "resourceType": "CarePlan",
+      "columns": [
+        {
+          "name": "Patient",
+          "type": "String",
+          "path": "CarePlan.subject.reference",
+          "index": false,
+          "dataIndex": false,
+          "length": 50,
+          "RENAMED": "CarePlanSubjectReference"
+        },
+        {
+          "name": "CarePlanActivityDescription",
+          "type": "String",
+          "path": "CarePlan.activity.detail.code.coding.display",
+          "index": false,
+          "dataIndex": false,
+          "length": 100,
+          "RENAMED": "CarePlanActivityDetailCodeCodingDisplay"
+        },
+        {
+          "name": "CarePlanActivityCode",
+          "type": "String",
+          "path": "CarePlan.activity.detail.code.coding.code",
+          "index": false,
+          "dataIndex": false,
+          "length": 50,
+          "RENAMED": "CarePlanActivityDetailCodeCodingCode"
+        },
+        {
+          "name": "CarePlanPeriodStart",
+          "type": "String",
+          "path": "CarePlan.period.start",
+          "index": false,
+          "dataIndex": false,
+          "length": 50
+        },
+        {
+          "name": "CarePlanPeriodEnd",
+          "type": "String",
+          "path": "CarePlan.period.end",
+          "index": false,
+          "dataIndex": false,
+          "length": 50
+        },
+        {
+          "name": "CarePlanStatus",
+          "type": "String",
+          "path": "CarePlan.status",
+          "index": false,
+          "dataIndex": false,
+          "length": 10
+        },
+        {
+          "name": "CarePlanCategory",
+          "type": "String",
+          "path": "CarePlan.category.coding.display",
+          "index": false,
+          "dataIndex": false,
+          "length": 100,
+          "RENAMED": "CarePlanCategoryCodingDisplay"
+        },
+        {
+          "name": "CarePlanCategoryCode",
+          "type": "String",
+          "path": "CarePlan.category.coding.code",
+          "index": false,
+          "dataIndex": false,
+          "length": 50,
+          "RENAMED": "CarePlanCategoryCodingCode"
+        }
+      ]
+    },
+    {
+      "resourceType": "MedicationRequest",
+      "columns": [
+        {
+          "name": "Patient",
+          "type": "String",
+          "path": "MedicationRequest.subject.reference",
+          "index": true,
+          "dataIndex": false,
+          "length": 50,
+          "RENAMED": "MedicationRequestSubjectReference"
+        },
+        {
+          "name": "Code",
+          "type": "String",
+          "path": "MedicationRequest.medicationCodeableConcept.coding.code",
+          "index": true,
+          "dataIndex": false,
+          "length": 10,
+          "RENAMED": "MedicationRequestMedicationCodeableConceptCodingCode"
+        },
+        {
+          "name": "Description",
+          "type": "String",
+          "path": "MedicationRequest.medicationCodeableConcept.coding.display",
+          "index": true,
+          "dataIndex": false,
+          "length": 250,
+          "RENAMED": "MedicationRequestMedicationCodeableConceptCodingDisplay"
+        },
+        {
+          "name": "AuthoredOn",
+          "type": "String",
+          "path": "MedicationRequest.authoredOn",
+          "index": false,
+          "dataIndex": false,
+          "length": 50,
+          "RENAMED": "AuthoredOn"
+        }
+      ]
+    }
+  ],
+  "version": 1,
+  "scanStartDateTime": "2026-03-31T08:26:28Z",
+  "scanFHIRRepositoryName": "READYAIRepo",
+  "id": 1,
+  "lastModified": "2026-03-31T08:40:49.521Z"
+}

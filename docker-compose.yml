@@ -1,0 +1,10 @@
+services:
+  iris:
+    build:
+      context: ./iris
+    container_name: iris
+    ports:
+      - "32783:52773"
+      - "32782:1972"
+    volumes:
+      - ./iris:/home/irisowner/dev

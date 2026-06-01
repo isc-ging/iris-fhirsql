@@ -1,0 +1,50 @@
+superuser
+SYS
+
+ // ---- Install ZPM ----
+ set $NAMESPACE = "%SYS"
+ set tURL = "https://pm.community.intersystems.com/packages/zpm/latest/installer"
+ set r = ##class(%Net.HttpRequest).%New()
+ set r.Server = "pm.community.intersystems.com"
+ set r.SSLConfiguration = "ISC.FeatureTracker.SSL.Config"
+ do r.Get("/packages/zpm/latest/installer")
+ do $system.OBJ.LoadStream(r.HttpResponse.Data,"c")
+
+    
+ do ##class(Security.Users).UnExpireUserPasswords("*")
+ 
+ // ---- Enable CallIn service ----
+ do ##class(Security.Services).Get("%Service_CallIn",.prop)
+ set prop("Enabled") = 1
+ do ##class(Security.Services).Modify("%Service_CallIn",.prop)
+
+ // ---- Create READYAI namespace Using HSLIB ----
+ zn "HSLIB"
+ set tSC=##class(HS.Util.Installer.Foundation).Install("FHIRSERVER",.pVars)
+
+
+ // ---- Map IPM to READYAI and load IPM package ----
+ ZN "%SYS"
+ zpm "enable -community"
+
+ zn "FHIRSERVER"
+
+ // ---- Compile and run FHIR SQL Builder setup before ZPM load ----
+ ;do $system.OBJ.LoadDir("/home/irisowner/dev/src/Setup","ck")
+ ;do ##class(Setup.Roles).Run()
+ do ##class(Setup.FSB).RunAll()
+ ;do ##class(Setup.FSBRestRequest).RunAll()
+
+ zpm "load /home/irisowner/dev/ -v"
+
+ // ---- Ensure all routines are compiled and persisted ----
+ ;do $system.OBJ.CompilePackage("Setup","ck")
+
+
+
+
+
+
+
+ halt
+

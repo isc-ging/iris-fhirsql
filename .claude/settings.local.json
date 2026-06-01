@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(/c/Users/ging/programs/mcp/iris-agentic-dev.exe check-config *)"
+    ]
+  },
+  "enabledMcpjsonServers": [
+    "iris-agentic-dev"
+  ]
+}

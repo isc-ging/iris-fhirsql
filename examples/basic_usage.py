@@ -1,9 +1,11 @@
 from fhirsql import FHIRSQLClient
 
+# Username and password will be read from IRISUSERNAME and IRISPASSWORD env vars if not provided
 client = FHIRSQLClient(
-    base_url="http://localhost:52773/csp/fhirsql/api/ui",
-    username="admin",
-    password="your_password"
+    hostname="localhost",
+    port=52773,
+    username="admin",  # Optional if IRISUSERNAME is set
+    password="your_password"  # Optional if IRISPASSWORD is set
 )
 
 # Create credential

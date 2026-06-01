@@ -1,3 +1,4 @@
+import os
 import requests
 from typing import Optional
 from fhirsql.resources.credentials import CredentialResource
@@ -11,16 +12,23 @@ class FHIRSQLClient:
 
     Example:
         client = FHIRSQLClient(
-            base_url="http://localhost:52773/csp/fhirsql/api/ui",
+            hostname="localhost",
+            port=52773,
             username="admin",
             password="secret"
         )
         repos = client.repositories.list()
     """
 
-    def __init__(self, base_url: str, username: Optional[str] = None,
+    def __init__(self, hostname: str, port: int = 52773,
+                 username: Optional[str] = None,
                  password: Optional[str] = None, verify_ssl: bool = True):
-        self.base_url = base_url.rstrip('/')
+        # Construct base URL with constant path
+        self.base_url = f"http://{hostname}:{port}/csp/fhirsql/api/ui"
+
+        # Default to environment variables if not provided
+        username = username or os.getenv('IRISUSERNAME')
+        password = password or os.getenv('IRISPASSWORD')
         self.session = requests.Session()
 
         if username and password:

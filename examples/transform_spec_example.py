@@ -1,9 +1,9 @@
 from fhirsql import FHIRSQLClient, TransformSpecBuilder
 
 client = FHIRSQLClient(
-    base_url="http://localhost:52773/csp/fhirsql/api/ui",
-    username="admin",
-    password="your_password"
+    hostname="localhost",
+    port=52773
+    # username and password read from IRISUSERNAME and IRISPASSWORD env vars
 )
 
 # Build spec programmatically

@@ -13,8 +13,16 @@ pip install -r requirements.txt
 ```python
 from fhirsql import FHIRSQLClient
 
+# Client automatically reads IRISUSERNAME and IRISPASSWORD env vars
 client = FHIRSQLClient(
-    base_url="http://localhost:52773/csp/fhirsql/api/ui",
+    hostname="localhost",
+    port=52773
+)
+
+# Or pass credentials explicitly
+client = FHIRSQLClient(
+    hostname="localhost",
+    port=52773,
     username="admin",
     password="password"
 )
