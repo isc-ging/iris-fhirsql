@@ -16,11 +16,12 @@ client = FHIRSQLClient(
 print("=== FHIR SQL Builder Workflow ===\n")
 
 # Step 1: Create Credentials
+# By default, uses the client's own login credentials
 print("1. Creating credentials...")
 cred = client.credentials.create(
-    system_name="SQLBuilderCreds",
-    username="SuperUser",
-    password="SYS"
+    system_name="SQLBuilderCreds"
+    # username and password default to client's credentials
+    # Override with: username="OtherUser", password="OtherPass"
 )
 print(f"   ✓ Created credential: {cred.id}\n")
 

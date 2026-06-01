@@ -21,11 +21,12 @@ client = FHIRSQLClient(
 )
 
 # Step 1: Create credentials for FHIR server
+# By default uses client's own credentials, or override with different ones
 print("Step 1: Creating credentials...")
 cred = client.credentials.create(
-    system_name="MyFHIRServer",
-    username="fhiruser",
-    password="secret"
+    system_name="MyFHIRServer"
+    # Defaults to client's username/password
+    # Override with: username="fhiruser", password="secret"
 )
 print(f"Created credential: {cred.id}")
 
