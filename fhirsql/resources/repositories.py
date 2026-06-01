@@ -12,39 +12,72 @@ class RepositoryResource(BaseResource):
         data = self._make_request("GET", "/fhirrepository", params={"ID": repository_id})
         return Repository.from_dict(data)
 
-    def create(self, name: str, host: str, port: int, fhir_url: str,
-               credentials_name: Optional[str] = None, ssl_config: Optional[str] = None) -> Repository:
+    def create(self, name: str, host: str, fhir_url: str,
+               port: Optional[int] = None,
+               internal_port: Optional[int] = None,
+               credentials_name: Optional[str] = None,
+               ssl_config: Optional[str] = None) -> Repository:
         """
         Create a FHIR repository configuration.
+
+        For Docker containers with port mapping, use internal_port for the container's
+        internal port while the client uses the mapped external port.
 
         Args:
             name: Display name for this repository
             host: Hostname (e.g., "localhost")
-            port: Port number (e.g., 52773)
             fhir_url: FHIR endpoint path (e.g., "/fhir/r4")
+            port: Port to use (defaults to client's port if not specified)
+            internal_port: For containers - the port FHIR server runs on internally.
+                          If specified, this is used instead of port.
             credentials_name: Credential system_name (not id!) to use for authentication
             ssl_config: Optional SSL configuration name
 
-        Example:
-            cred = client.credentials.create(system_name="MyCredentials")
+        Examples:
+            # Simple case (no containers) - uses client's port automatically
             repo = client.repositories.create(
                 name="My FHIR Server",
                 host="localhost",
-                port=52773,
                 fhir_url="/fhir/r4",
-                credentials_name=cred.system_name  # or just "MyCredentials"
+                credentials_name="MyCredentials"
+            )
+
+            # Docker container with port mapping (external 32783 -> internal 52773)
+            # Client connects to 32783, but repo config needs internal port 52773
+            repo = client.repositories.create(
+                name="Containerized FHIR",
+                host="localhost",
+                fhir_url="/fhir/r4",
+                internal_port=52773,  # Port inside container
+                credentials_name="MyCredentials"
             )
         """
         if not all([name, host, fhir_url]):
             raise ValidationError("name, host, and fhir_url required")
 
-        if not isinstance(port, int) or port <= 0 or port > 65535:
+        # Determine which port to use
+        # Priority: internal_port > port > client's port
+        if internal_port is not None:
+            final_port = internal_port
+        elif port is not None:
+            final_port = port
+        else:
+            # Extract port from client's base_url
+            # base_url format: http://hostname:port/csp/fhirsql/api/ui
+            import re
+            match = re.search(r':(\d+)/', self.client.base_url)
+            if match:
+                final_port = int(match.group(1))
+            else:
+                raise ValidationError("Could not determine port - please specify port or internal_port")
+
+        if not isinstance(final_port, int) or final_port <= 0 or final_port > 65535:
             raise ValidationError("port must be an integer between 1 and 65535")
 
         repo = Repository(
             name=name,
             hostname=host,
-            port=str(port),
+            port=str(final_port),
             repository_url=fhir_url,
             credentials_id=credentials_name,  # API expects system_name, not id
             ssl_config=ssl_config

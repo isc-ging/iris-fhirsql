@@ -30,9 +30,10 @@ print("2. Configuring FHIR repository...")
 repo = client.repositories.create(
     name="SQLBuilderConfig",
     host="localhost",
-    port=52773,
     fhir_url="/fhir/r4",
-    credentials_name=cred.system_name  # Use system_name, not id
+    credentials_name=cred.system_name,  # Use system_name, not id
+    # port automatically uses client's port
+    # For Docker containers with port mapping, use: internal_port=52773
 )
 print(f"   ✓ Created repository: {repo.id}\n")
 

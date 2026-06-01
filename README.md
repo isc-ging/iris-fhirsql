@@ -42,12 +42,22 @@ cred = client.credentials.create(
 
 ### 2. Configure FHIR Repository
 ```python
+# Simple case - port defaults to client's port
 repo = client.repositories.create(
     name="SQLBuilderConfig",
     host="localhost",
-    port=52773,
     fhir_url="/fhir/r4",
-    credentials_name=cred.system_name  # Use system_name, not id
+    credentials_name=cred.system_name
+)
+
+# Docker containers with port mapping (e.g., 32783 -> 52773)
+# Client uses external port 32783, but repository needs internal port 52773
+repo = client.repositories.create(
+    name="SQLBuilderConfig",
+    host="localhost",
+    fhir_url="/fhir/r4",
+    internal_port=52773,  # Port inside container
+    credentials_name=cred.system_name
 )
 ```
 
