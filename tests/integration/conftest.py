@@ -100,7 +100,7 @@ def workflow(client, fhir_server_ready):
         cleanup.callback(client.repositories.delete, repo.id)
 
         step("analysis")
-        analysis = client.analysis.create(repository_id=repo.id, max_distinct=1000, selectivity_percentage=100)
+        analysis = client.analysis.create(repository_id=repo.id, selectivity_percentage=100)
         cleanup.callback(client.analysis.delete, analysis.id)
         while analysis.status != "completed":
             if time.time() - start > ANALYSIS_TIMEOUT_S:

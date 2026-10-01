@@ -102,7 +102,7 @@ or any IRIS type name passed through unvalidated.
 |--------|---------|-------------|
 | `list()` | `list[Analysis]` | |
 | `get(task_id)` | `Analysis` | Poll `status`: `running` then `completed` |
-| `create(repository_id, max_distinct=None, selectivity_percentage=None)` | `Analysis` | `selectivity_percentage` must be 0-100 |
+| `create(repository_id, max_distinct=None, selectivity_percentage=None)` | `Analysis` | Pass only one of `max_distinct` / `selectivity_percentage` (0-100); neither defaults to `selectivity_percentage=100` |
 | `update(task_id, action="resume")` | `Analysis` | Uses the `TASKID` parameter (unverified against the server) |
 | `delete(task_id)` | `bool` | |
 | `get_results(task_id)` | `dict` | Raw analysis output |

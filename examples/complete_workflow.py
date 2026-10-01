@@ -41,7 +41,6 @@ print(f"   Created repository: {repo.id}\n")
 print("3. Launching analysis task...")
 analysis = client.analysis.create(
     repository_id=repo.id,
-    max_distinct=1000,
     selectivity_percentage=100  # 100% for complete analysis
 )
 print(f"   Analysis started: {analysis.id}")

@@ -128,8 +128,7 @@ the same host, port and URL. To register a single one, use `create_from_fhir_ser
 ```python
 analysis = client.analysis.create(
     repository_id=repo.id,
-    max_distinct=1000,             # max distinct values collected per field
-    selectivity_percentage=100,    # 0-100; 100 for a complete analysis
+    selectivity_percentage=100,    # 0-100; 100 for a complete analysis (default). Or pass max_distinct=N instead, never both
 )
 
 import time

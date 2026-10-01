@@ -44,7 +44,7 @@ repo = client.repositories.create(
 )
 
 log("3. analysis")
-analysis = client.analysis.create(repository_id=repo.id, max_distinct=1000, selectivity_percentage=100)
+analysis = client.analysis.create(repository_id=repo.id, selectivity_percentage=100)
 while analysis.status != "completed":
     time.sleep(5)
     analysis = client.analysis.get(analysis.id)

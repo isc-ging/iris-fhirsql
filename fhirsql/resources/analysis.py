@@ -30,24 +30,24 @@ class AnalysisResource(BaseResource):
             repository_id: ID of the FHIR Repository to analyze (from Repository.id).
                           Obtain this from client.repositories.create() or list().
             max_distinct: Maximum number of distinct values to collect per field.
-                         Used for data profiling and selectivity analysis.
+                         Mutually exclusive with selectivity_percentage.
             selectivity_percentage: Selectivity threshold percentage (0-100).
-                                   Fields with selectivity above this threshold
-                                   are candidates for indexing.
+                                   Mutually exclusive with max_distinct.
+                                   Defaults to 100 when neither option is given.
 
         Returns:
             Analysis: Analysis object with task ID and initial status.
                      Use analysis.id to track status and retrieve results.
 
         Raises:
-            ValidationError: If repository_id is missing or selectivity_percentage
-                           is out of range (0-100).
+            ValidationError: If repository_id is missing, both max_distinct and
+                           selectivity_percentage are given, or
+                           selectivity_percentage is out of range (0-100).
 
         Example:
             repo = client.repositories.create(name="FHIR Server", url="http://...")
             analysis = client.analysis.create(
                 repository_id=repo.id,
-                max_distinct=1000,
                 selectivity_percentage=50
             )
             # Poll until complete
@@ -58,6 +58,12 @@ class AnalysisResource(BaseResource):
         """
         if not repository_id:
             raise ValidationError("repository_id required")
+
+        if max_distinct is not None and selectivity_percentage is not None:
+            raise ValidationError("provide only one of max_distinct or selectivity_percentage")
+
+        if max_distinct is None and selectivity_percentage is None:
+            selectivity_percentage = 100
 
         if selectivity_percentage is not None:
             if not (0 <= selectivity_percentage <= 100):
