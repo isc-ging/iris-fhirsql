@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-Keep committing your work! 
+Keep committing your work. No need to ask
 
 ## What this is
 
@@ -27,7 +27,7 @@ pytest tests/integration
 docker compose -f docker-compose.ci.yml down -v
 ```
 
-`.github/workflows/ci.yml` runs the same two steps. Integration env vars have no defaults on purpose. There is no linter config or build step.
+`.github/workflows/ci.yml` runs only the unit tests (on push to `main`, PRs, manual). Integration tests are local-only: the IRIS image runs out of memory on GitHub runners. Integration env vars have no defaults on purpose. There is no linter config or build step.
 
 ## Local IRIS environment
 

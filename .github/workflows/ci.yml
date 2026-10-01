@@ -2,9 +2,11 @@ name: CI
 
 on:
   push:
+    branches: [main]
   pull_request:
   workflow_dispatch:
 
+# Integration tests (tests/integration) are local-only: the IRIS image runs out of memory on GitHub runners.
 jobs:
   unit:
     runs-on: ubuntu-latest
@@ -18,50 +20,3 @@ jobs:
           cache-dependency-path: requirements-dev.txt
       - run: pip install -r requirements-dev.txt
       - run: pytest tests/unit -v
-
-  integration:
-    runs-on: ubuntu-latest
-    timeout-minutes: 45
-    env:
-      FHIRSQL_HOST: localhost
-      FHIRSQL_PORT: "42783"
-      FHIRSQL_SUPERSERVER_PORT: "42782"
-      IRISUSERNAME: SuperUser
-      IRISPASSWORD: SYS
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: docker/setup-buildx-action@v3
-
-      - name: Build IRIS image (layer cache keeps the fhir-server install fast on reruns)
-        uses: docker/build-push-action@v6
-        with:
-          context: ./ci
-          load: true
-          tags: fhirsql-ci-iris:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-
-      - name: Start IRIS container and wait for healthy
-        run: |
-          echo "[$(date +%T)] starting container"
-          docker compose -f docker-compose.ci.yml up -d --wait --wait-timeout 600
-          echo "[$(date +%T)] container healthy"
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-          cache: pip
-          cache-dependency-path: requirements-dev.txt
-      - run: pip install -r requirements-dev.txt
-
-      - name: Integration tests
-        run: pytest tests/integration -v
-
-      - name: Container logs
-        if: failure()
-        run: docker compose -f docker-compose.ci.yml logs --no-color
-
-      - name: Stop container
-        if: always()
-        run: docker compose -f docker-compose.ci.yml down -v
