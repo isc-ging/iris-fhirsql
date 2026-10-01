@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "iris-fhirsql"
+version = "0.1.0"
+description = "Python client for the InterSystems FHIR SQL Builder (HS.HC.FHIRSQL) REST API"
+readme = "README.md"
+requires-python = ">=3.9"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Gabriel Ing" }]
+keywords = ["intersystems", "iris", "fhir", "sql", "fhirsql"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Topic :: Database",
+]
+dependencies = ["requests>=2.28.0"]
+
+[project.optional-dependencies]
+# only needed for RepositoryResource.find_fhir_servers()
+discovery = ["intersystems-irispython"]
+
+[project.urls]
+Homepage = "https://github.com/isc-ging/iris-fhirsql"
+Issues = "https://github.com/isc-ging/iris-fhirsql/issues"
+
+[tool.setuptools.packages.find]
+include = ["iris_fhirsql*"]
