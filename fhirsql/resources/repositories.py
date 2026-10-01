@@ -1,6 +1,10 @@
 import json
 from typing import List, Optional
-import iris
+try:
+    import iris
+except ImportError:
+    # Optional dependency: only FHIR server discovery (DB API) needs it.
+    iris = None
 from fhirsql.resources.base import BaseResource
 from fhirsql.models import Repository, FHIRServer
 from fhirsql.exceptions import ValidationError
@@ -131,6 +135,11 @@ class RepositoryResource(BaseResource):
             client = FHIRSQLClient(hostname="localhost", port=32783, superserver_port=32782)
             servers = client.repositories.find_fhir_servers()
         """
+        if iris is None:
+            raise ImportError(
+                "intersystems-irispython is required for FHIR server discovery: "
+                "pip install intersystems-irispython"
+            )
         if self.client.superserver_port is None:
             raise ValidationError(
                 "superserver_port not defined: pass superserver_port to FHIRSQLClient "

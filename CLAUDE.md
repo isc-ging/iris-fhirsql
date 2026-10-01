@@ -9,7 +9,8 @@ Keep committing your work!
 ## Commands
 
 ```bash
-pip install -r requirements.txt          # requests + intersystems-irispython
+pip install -r requirements.txt          # requests only
+pip install intersystems-irispython      # optional: only for find_fhir_servers()
 python examples/complete_workflow.py     # end-to-end workflow against a live IRIS
 ```
 
@@ -46,7 +47,7 @@ docker compose -f docker-compose.ci.yml down -v
 
 ### FHIR server discovery (DB API, not REST)
 
-`RepositoryResource.find_fhir_servers()` uses `intersystems-irispython` (`iris.connect`) over the **superserver** port (`FHIRSQLClient(superserver_port=...)`, required for this feature). It reads `^%SYS("WebServer","Port")` for the internal web port and queries `HS_FHIRServer.RepoInstance` in each namespace. `add_fhir_servers()` registers the results as FSB repositories, skipping duplicates.
+`RepositoryResource.find_fhir_servers()` uses `intersystems-irispython` (`iris.connect`; optional dependency, import is guarded and the method raises `ImportError` if missing) over the **superserver** port (`FHIRSQLClient(superserver_port=...)`, required for this feature). It reads `^%SYS("WebServer","Port")` for the internal web port and queries `HS_FHIRServer.RepoInstance` in each namespace. `add_fhir_servers()` registers the results as FSB repositories, skipping duplicates.
 
 ### FSB API quirks
 

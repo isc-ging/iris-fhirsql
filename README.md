@@ -8,6 +8,7 @@ Based on: [FHIR SQL Builder Step-by-Step](https://community.intersystems.com/pos
 
 ```bash
 pip install -r requirements.txt
+pip install intersystems-irispython   # optional: only needed for find_fhir_servers()
 ```
 
 ## Quick Start

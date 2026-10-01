@@ -26,11 +26,11 @@ Related documents:
 ## Installation
 
 ```bash
-pip install -r requirements.txt   # requests + intersystems-irispython
+pip install -r requirements.txt   # requests only
 ```
 
-`intersystems-irispython` is only used for FHIR server discovery (`find_fhir_servers`), but it is imported
-unconditionally, so it must be installed.
+`intersystems-irispython` is optional. It is only used for FHIR server discovery (`find_fhir_servers`), which
+raises `ImportError` if it is not installed. Install it with `pip install intersystems-irispython`.
 
 ## Concepts
 
