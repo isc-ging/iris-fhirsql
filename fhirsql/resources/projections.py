@@ -137,7 +137,8 @@ class ProjectionResource(BaseResource):
             projection = self.get(projection_id)
             status = (projection.status or "").lower()
 
-            if status in ["completed", "complete", "success"]:
+            # "active" is what FSB reports once a projection is built
+            if status in ["active", "completed", "complete", "success"]:
                 return projection
             elif status in ["failed", "error"]:
                 raise RuntimeError(f"Projection failed with status: {projection.status}")

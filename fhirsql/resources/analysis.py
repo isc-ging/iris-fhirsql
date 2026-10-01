@@ -51,7 +51,7 @@ class AnalysisResource(BaseResource):
                 selectivity_percentage=50
             )
             # Poll until complete
-            while analysis.status != "complete":
+            while analysis.status != "completed":
                 analysis = client.analysis.get(analysis.id)
             # Get results to inform transform spec design
             results = client.analysis.get_results(analysis.id)
