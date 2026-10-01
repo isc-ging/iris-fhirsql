@@ -1,8 +1,0 @@
-{
-  "mcpServers": {
-    "iris-agentic-dev": {
-      "command": "C:\\Users\\ging\\programs\\mcp\\iris-agentic-dev.exe",
-      "args": ["mcp", "--workspace", "."]
-    }
-  }
-}

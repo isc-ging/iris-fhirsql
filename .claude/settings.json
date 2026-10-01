@@ -1,9 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "mcp__iris-agentic-dev__*",
-      "Bash(git add *)",
-      "Bash(git commit *)"
-    ]
-  }
-}
