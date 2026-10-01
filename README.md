@@ -72,36 +72,40 @@ analysis = client.analysis.create(
 )
 
 # Wait for completion
-while analysis.status != "complete":
+while analysis.status != "completed":
     analysis = client.analysis.get(analysis.id)
 ```
 
 ### 4. Create Transformation Specification
-Define how FHIR resources map to SQL columns:
+Define how FHIR resources map to SQL columns. Each field needs a full FHIRPath
+(starting with the resource type), a type as reported by the analysis
+(`String`, `Number`, `Boolean`) and a SQL column name:
 
 ```python
 from fhirsql import TransformSpecBuilder
 
-spec = client.transform_specs.create(
-    name="Patient Demographics",
-    scan_id=analysis.id
-)
+builder = TransformSpecBuilder("Patient Demographics", scan_id=analysis.id)
+builder.add_field("Patient", "Patient.name.family", "String", name="LastName", length=50)
+builder.add_field("Patient", "Patient.name.given", "String", name="FirstName", length=50)
+builder.add_field("Patient", "Patient.gender", "String", name="PatientGender", length=10, index=True)
+builder.add_field("Patient", "Patient.birthDate", "String", name="PatientBirthDate", length=10)
 
-# Build field mappings
-builder = TransformSpecBuilder("Patient Demographics")
-builder.add_resource_type("Patient")
-builder.add_field("Patient", "name.family", "string", column_name="LastName")
-builder.add_field("Patient", "name.given", "string", column_name="FirstName")
-builder.add_field("Patient", "gender", "string", column_name="PatientGender")
-builder.add_field("Patient", "birthDate", "date", column_name="PatientBirthDate")
+builder.save("patient_spec.json")  # optional; reload with TransformSpecBuilder.load()
 
-# Create subtable for one-to-many relationships
-builder.add_resource_type("PatientAddress")
-builder.add_field("PatientAddress", "address.city", "string", column_name="City")
-builder.add_field("PatientAddress", "address.state", "string", column_name="State")
-
-builder.save("patient_spec.json")
+spec = client.transform_specs.create_from_builder(builder)
 ```
+
+Repeating elements (e.g. `Patient.address`) are projected as subtables, one row per repetition.
+Subtable column paths are relative to the subtable path:
+
+```python
+builder.add_subtable("Patient", "PatientAddress", path="Patient.address")
+builder.add_subtable_field("Patient", "PatientAddress", "city", "String", name="City", length=50)
+builder.add_subtable_field("Patient", "PatientAddress", "postalCode", "String", name="PostalCode", length=10)
+```
+
+The subtable gets a `Patient` column (parent `ID`), so `a.Patient->LastName` or
+`JOIN patientdata.Patient p ON a.Patient = p.ID` work. Use type `%Numeric` (not `Number`) to keep decimals.
 
 ### 5. Launch Projection
 Generates actual SQL schema/tables:
@@ -122,24 +126,33 @@ projection = client.projections.poll_until_complete(projection.id)
 Access via Management Portal → FHIRSERVER → System Explorer → SQL:
 
 ```sql
-SELECT
-  Patient->PatientNames->FirstName,
-  Patient->PatientNames->LastName,
-  Patient->PatientGender,
-  Patient->PatientBirthDate,
-  City,
-  State
-FROM patientdata.PatientAddresss
+SELECT FirstName, LastName, PatientGender, PatientBirthDate
+FROM patientdata.Patient
+
+-- with the PatientAddress subtable
+SELECT p.LastName, a.City, a.PostalCode
+FROM patientdata.PatientAddress a
+JOIN patientdata.Patient p ON a.Patient = p.ID
 ```
 
-## Complete Example
+## Documentation
 
-See [`examples/complete_workflow.py`](examples/complete_workflow.py) for a full working example.
+- [User guide](docs/guide.md) - concepts, connecting, the workflow, Docker ports, server quirks
+- [Transform specs and subtables](docs/transform-specs.md) - column types, subtables, joins, validation rules
+- [Cookbook](docs/cookbook.md) - complete examples: flat, subtables, multi-resource joins, discovery, cleanup
+- [API reference](docs/api-reference.md) - every class, method and parameter
 
-## API Reference
+## Examples
+
+- [`examples/complete_workflow.py`](examples/complete_workflow.py) - full workflow with a subtable
+- [`examples/subtable_workflow.py`](examples/subtable_workflow.py) - address and telecom subtables, queries, optional cleanup
+- [`examples/transform_spec_example.py`](examples/transform_spec_example.py) - multi-resource spec with save/load
+- [`examples/docker_container_example.py`](examples/docker_container_example.py) - container port mapping
+
+## API Overview
 
 - `client.credentials` - Manage authentication credentials
-- `client.repositories` - Configure FHIR repository connections  
+- `client.repositories` - Configure FHIR repository connections and discover FHIR servers
 - `client.analysis` - Analyze FHIR repository structure
-- `client.transform_specs` - Define FHIR→SQL field mappings
+- `client.transform_specs` - Define FHIR to SQL field mappings
 - `client.projections` - Generate SQL schemas from specifications

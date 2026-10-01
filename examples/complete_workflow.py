@@ -23,7 +23,7 @@ cred = client.credentials.create(
     # username and password default to client's credentials
     # Override with: username="OtherUser", password="OtherPass"
 )
-print(f"   ✓ Created credential: {cred.id}\n")
+print(f"   Created credential: {cred.system_name}\n")
 
 # Step 2: Configure FHIR Repository
 print("2. Configuring FHIR repository...")
@@ -35,7 +35,7 @@ repo = client.repositories.create(
     # port automatically uses client's port
     # For Docker containers with port mapping, use: internal_port=52773
 )
-print(f"   ✓ Created repository: {repo.id}\n")
+print(f"   Created repository: {repo.id}\n")
 
 # Step 3: Launch Analysis
 print("3. Launching analysis task...")
@@ -44,8 +44,8 @@ analysis = client.analysis.create(
     max_distinct=1000,
     selectivity_percentage=100  # 100% for complete analysis
 )
-print(f"   ✓ Analysis started: {analysis.id}")
-print(f"   ⏳ Status: {analysis.status}")
+print(f"   Analysis started: {analysis.id}")
+print(f"   Status: {analysis.status}")
 
 # Poll for analysis completion
 print("   Waiting for analysis to complete...")
@@ -55,52 +55,39 @@ while True:
     if analysis.status in ["complete", "completed", "finished"]:
         break
     elif analysis.status == "error":
-        print("   ✗ Analysis failed!")
+        print("   Analysis failed!")
         exit(1)
     time.sleep(5)
 
-print("   ✓ Analysis complete!\n")
+print("   Analysis complete!\n")
 
-# Step 4: Create Transformation Specification
+# Step 4: Define field mappings and create the Transformation Specification
+# Paths are full FHIRPath expressions; types match the analysis ("String", "Number", "Boolean")
 print("4. Creating transformation specification...")
-spec = client.transform_specs.create(
-    name="SQLBuilderTransformation",
-    scan_id=analysis.id
-)
-print(f"   ✓ Created transform spec: {spec.id}\n")
+builder = TransformSpecBuilder("SQLBuilderTransformation", scan_id=analysis.id)
 
-# Step 5: Define Field Mappings using TransformSpecBuilder
-print("5. Defining field mappings...")
-builder = TransformSpecBuilder("Patient Demographics", spec_data={"scanId": analysis.id})
+builder.add_field("Patient", "Patient.name.family", "String", name="LastName", length=50)
+builder.add_field("Patient", "Patient.name.given", "String", name="FirstName", length=50)
+builder.add_field("Patient", "Patient.gender", "String", name="PatientGender", length=10, index=True)
+builder.add_field("Patient", "Patient.birthDate", "String", name="PatientBirthDate", length=10)
 
-# Map Patient name fields
-builder.add_resource_type("Patient")
-builder.add_field("Patient", "name.family", "string", column_name="LastName")
-builder.add_field("Patient", "name.given", "string", column_name="FirstName")
-builder.add_field("Patient", "gender", "string", column_name="PatientGender")
-builder.add_field("Patient", "birthDate", "date", column_name="PatientBirthDate")
-builder.add_field("Patient", "telecom", "string", column_name="PatientPhone")
+# Addresses repeat, so project them as a subtable (one row per address).
+# Subtable column paths are relative to the subtable path.
+builder.add_subtable("Patient", "PatientAddress", path="Patient.address")
+builder.add_subtable_field("Patient", "PatientAddress", "city", "String", name="City", length=50)
+builder.add_subtable_field("Patient", "PatientAddress", "state", "String", name="State", length=50)
+builder.add_subtable_field("Patient", "PatientAddress", "postalCode", "String", name="PostalCode", length=10)
+builder.add_subtable_field("Patient", "PatientAddress", "country", "String", name="Country", length=10)
 
-# Create subtable for addresses (one-to-many relationship)
-builder.add_resource_type("PatientAddress")
-builder.add_field("PatientAddress", "address.latitude.valueDecimal", "decimal", column_name="AddressLat")
-builder.add_field("PatientAddress", "address.longitude.valueDecimal", "decimal", column_name="AddressLong")
-builder.add_field("PatientAddress", "address.line", "string", column_name="Street")
-builder.add_field("PatientAddress", "address.city", "string", column_name="City")
-builder.add_field("PatientAddress", "address.state", "string", column_name="State")
-builder.add_field("PatientAddress", "address.postalCode", "string", column_name="PostalCode")
-builder.add_field("PatientAddress", "address.country", "string", column_name="Country")
-
-print("   ✓ Field mappings defined")
-print(f"   - Patient fields: {len(builder.spec['resourceTypes']['Patient']['fields'])}")
-print(f"   - PatientAddress subtable fields: {len(builder.spec['resourceTypes']['PatientAddress']['fields'])}\n")
-
-# Save the spec for reference
+# Save the spec for reference / version control
 builder.save("patient_demographics_spec.json")
-print("   ✓ Saved spec to patient_demographics_spec.json\n")
+print("   Saved spec to patient_demographics_spec.json")
 
-# Step 6: Create Projection (Generate SQL Schema)
-print("6. Launching projection...")
+spec = client.transform_specs.create_from_builder(builder)
+print(f"   Created transform spec: {spec.id}\n")
+
+# Step 5: Create Projection (Generate SQL Schema)
+print("5. Launching projection...")
 projection = client.projections.create(
     repository_id=repo.id,
     spec_id=spec.id,
@@ -108,42 +95,39 @@ projection = client.projections.create(
     users=["_SYSTEM", "SuperUser"],
     name="Patient Demographics Projection"
 )
-print(f"   ✓ Projection launched: {projection.id}")
-print(f"   ⏳ Status: {projection.status}")
+print(f"   Projection launched: {projection.id}")
+print(f"   Status: {projection.status}")
 
 # Poll for projection completion
 print("   Waiting for projection to build...")
 while True:
     projection = client.projections.get(projection.id)
     print(f"   Status: {projection.status}")
-    if projection.status in ["built", "complete", "completed"]:
+    if projection.status in ["Active", "built", "complete", "completed"]:
         break
     elif projection.status == "error":
-        print("   ✗ Projection failed!")
+        print("   Projection failed!")
         exit(1)
     time.sleep(5)
 
-print("   ✓ Projection built!\n")
+print("   Projection built!\n")
 
 print("=" * 50)
-print("✓ Workflow complete!")
+print("Workflow complete!")
 print("\nYou can now query your data using SQL:")
-print("\nManagement Portal → FHIRSERVER namespace → System Explorer → SQL")
+print("\nManagement Portal -> FHIRSERVER namespace -> System Explorer -> SQL")
 print("Schema: patientdata")
 print("\nExample query:")
 print("""
 SELECT
-  Patient->PatientNames->FirstName,
-  Patient->PatientNames->LastName,
-  Patient->PatientGender,
-  Patient->PatientBirthDate,
-  Patient->PatientPhone,
-  AddressLong,
-  AddressLat,
-  City,
-  Country,
-  PostalCode,
-  State,
-  Street
-FROM patientdata.PatientAddresss
+  p.FirstName,
+  p.LastName,
+  p.PatientGender,
+  p.PatientBirthDate,
+  a.City,
+  a.State,
+  a.PostalCode,
+  a.Country
+FROM patientdata.PatientAddress a
+JOIN patientdata.Patient p ON a.Patient = p.ID
 """)

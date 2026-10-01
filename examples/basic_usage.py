@@ -5,12 +5,13 @@ This example demonstrates the complete workflow:
 1. Create credentials for FHIR server authentication
 2. Create repository pointing to your FHIR server
 3. Run analysis to discover FHIR resources and fields
-4. Create transform spec defining desired SQL projection
-5. Build field mappings for the transform spec
+4. Build field mappings with TransformSpecBuilder
+5. Create the transform spec on the server
 6. Create projection to generate SQL tables
 """
 
-from fhirsql import FHIRSQLClient
+import time
+from fhirsql import FHIRSQLClient, TransformSpecBuilder
 
 # Username and password will be read from IRISUSERNAME and IRISPASSWORD env vars if not provided
 client = FHIRSQLClient(
@@ -52,37 +53,31 @@ print(f"Started analysis: {analysis.id}")
 
 # Poll until analysis completes
 print("Waiting for analysis to complete...")
-completed_analysis = client.analysis.poll_until_complete(analysis.id)
-print(f"Analysis completed with status: {completed_analysis.status}")
+while analysis.status != "completed":
+    time.sleep(5)
+    analysis = client.analysis.get(analysis.id)
+    print(f"  Status: {analysis.status}")
 
-# Step 4: Create transform spec
-print("\nStep 4: Creating transform spec...")
-spec = client.transform_specs.create(
-    name="Patient Demographics",
-    analysis_id=completed_analysis.id
-)
-print(f"Created transform spec: {spec.id}")
-
-# Step 5: Build field mappings
-print("\nStep 5: Adding field mappings...")
-# Add Patient resource type
-client.transform_specs.add_resource_type(spec.id, "Patient")
-
-# Add individual fields with appropriate types
+# Step 4: Build field mappings: (FHIRPath, type, column name, length)
+print("\nStep 4: Building field mappings...")
+builder = TransformSpecBuilder("Patient Demographics", scan_id=analysis.id)
 fields_to_add = [
-    ("id", "string"),
-    ("name.family", "string"),
-    ("name.given", "string"),
-    ("birthDate", "date"),
-    ("gender", "string"),
-    ("address.city", "string"),
-    ("address.state", "string"),
-    ("address.postalCode", "string"),
+    ("Patient.name.family", "String", "FamilyName", 50),
+    ("Patient.name.given", "String", "GivenName", 50),
+    ("Patient.birthDate", "String", "BirthDate", 10),
+    ("Patient.gender", "String", "Gender", 10),
+    ("Patient.address.city", "String", "City", 50),
+    ("Patient.address.state", "String", "State", 50),
+    ("Patient.address.postalCode", "String", "PostalCode", 10),
 ]
+for path, field_type, name, length in fields_to_add:
+    builder.add_field("Patient", path, field_type, name=name, length=length)
+    print(f"  Added field: {path} -> {name} ({field_type})")
 
-for field_path, field_type in fields_to_add:
-    client.transform_specs.add_field(spec.id, "Patient", field_path, field_type)
-    print(f"  Added field: Patient.{field_path} ({field_type})")
+# Step 5: Create transform spec on the server
+print("\nStep 5: Creating transform spec...")
+spec = client.transform_specs.create_from_builder(builder)
+print(f"Created transform spec: {spec.id}")
 
 # Step 6: Create projection
 print("\nStep 6: Creating projection...")
