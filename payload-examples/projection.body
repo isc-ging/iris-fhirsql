@@ -1,8 +1,8 @@
 {
     "fhirRepositoryId": 1,
     "specificationId": 1,
-    "packageName": "AFHIRData",
+    "packageName": "ExampleData",
     "users": [
-    "DScully", "NJoy"
+    "ExampleUser1", "ExampleUser2"
 ]
 }

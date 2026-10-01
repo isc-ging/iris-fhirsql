@@ -43,7 +43,7 @@ docker compose -f docker-compose.ci.yml down -v
 - `iris_fhirsql/resources/base.py` - `BaseResource._make_request` builds URL from `client.base_url + path`, raises `APIError` on status >= 400. All resource managers subclass this.
 - `iris_fhirsql/models.py` - dataclasses with `to_dict()` / `from_dict()` translating snake_case Python fields to the API's camelCase JSON (e.g. `repository_url` <-> `repositoryURL`, `spec_id` <-> `specificationId`).
 - `iris_fhirsql/transformspec.py` - `TransformSpecBuilder`, local builder for spec JSON with file save/load.
-- `Specifications/FHIR/SetupRequestBodies/*.body` - real captured request bodies for each FSB endpoint. Use these as ground truth for payload shapes.
+- `payload-examples/*.body` - real captured request bodies for each FSB endpoint. Use these as ground truth for payload shapes.
 
 ### FHIR server discovery (DB API, not REST)
 

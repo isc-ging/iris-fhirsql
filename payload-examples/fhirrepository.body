@@ -1,8 +1,8 @@
 {
-  "name": "READYAIRepo",
+  "name": "ExampleRepo",
   "hostname": "localhost",
   "port": "52773",
   "sslConfig": "",
   "credentialsId": "SuperUser",
-  "repositoryURL": "/readyai/r4"
+  "repositoryURL": "/fhir/r4"
 }
