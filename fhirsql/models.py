@@ -145,3 +145,13 @@ class Projection:
             users=data.get("users"),
             status=data.get("status")
         )
+
+@dataclass
+class FHIRServer:
+    """A FHIR server endpoint discovered on an IRIS instance (HS_FHIRServer.RepoInstance)."""
+    namespace: str
+    csp_url: str
+    fhir_version: str
+    web_port: int
+    is_enabled: bool
+    name: Optional[str] = None  # RepoInstance.name is nullable

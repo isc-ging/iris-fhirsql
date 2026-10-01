@@ -21,9 +21,13 @@ class FHIRSQLClient:
     """
 
     def __init__(self, hostname: str, port: int = 52773,
+                 superserver_port: Optional[int] = None,
                  username: Optional[str] = None,
                  password: Optional[str] = None, verify_ssl: bool = True):
         # Construct base URL with constant path
+        self.hostname = hostname
+        # Superserver (DB API) port, only needed for FHIR server discovery
+        self.superserver_port = superserver_port
         self.base_url = f"http://{hostname}:{port}/csp/fhirsql/api/ui"
 
         # Default to environment variables if not provided
