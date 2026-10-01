@@ -80,7 +80,6 @@ Analyzes FHIR repository structure to discover resources and relationships:
 ```python
 analysis = client.analysis.create(
     repository_id=repo.id,
-    max_distinct=1000,
     selectivity_percentage=100  # 0-100, use 100 for complete analysis
 )
 
@@ -136,17 +135,36 @@ projection = client.projections.poll_until_complete(projection.id)
 ```
 
 ### 6. Query Your Data
-Access via Management Portal → FHIRSERVER → System Explorer → SQL:
+Projected tables are ordinary SQL tables in the FSB namespace. Query them with the Python DB API
+(`pip install intersystems-irispython`) over the superserver port:
 
-```sql
-SELECT FirstName, LastName, PatientGender, PatientBirthDate
-FROM patientdata.Patient
+```python
+import iris
 
--- with the PatientAddress subtable
-SELECT p.LastName, a.City, a.PostalCode
-FROM patientdata.PatientAddress a
-JOIN patientdata.Patient p ON a.Patient = p.ID
+username, password = client.session.auth
+conn = iris.connect("localhost", 32782, "FHIRSERVER", username, password)  # superserver port
+cur = conn.cursor()
+
+cur.execute("""
+    SELECT FirstName, LastName, PatientGender, PatientBirthDate
+    FROM patientdata.Patient
+""")
+for first, last, gender, birth_date in cur.fetchall():
+    print(first, last, gender, birth_date)
+
+# with the PatientAddress subtable
+cur.execute("""
+    SELECT p.LastName, a.City, a.PostalCode
+    FROM patientdata.PatientAddress a
+    JOIN patientdata.Patient p ON a.Patient = p.ID
+""")
+for last, city, postal_code in cur.fetchall():
+    print(last, city, postal_code)
+
+conn.close()
 ```
+
+You can also run the same SQL in the Management Portal: FHIRSERVER → System Explorer → SQL.
 
 ## Documentation
 
