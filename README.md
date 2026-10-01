@@ -97,7 +97,7 @@ Define how FHIR resources map to SQL columns. Each field needs a full FHIRPath
 ```python
 from iris_fhirsql import TransformSpecBuilder
 
-builder = TransformSpecBuilder("Patient Demographics", scan_id=analysis.id)
+builder = TransformSpecBuilder("Patient Demographics", analysis_id=analysis.id)
 builder.add_field("Patient", "Patient.name.family", "String", name="LastName", length=50)
 builder.add_field("Patient", "Patient.name.given", "String", name="FirstName", length=50)
 builder.add_field("Patient", "Patient.gender", "String", name="PatientGender", length=10, index=True)

@@ -146,7 +146,7 @@ analysis output, which lists the resources and paths available to map.
 ```python
 from iris_fhirsql import TransformSpecBuilder
 
-builder = TransformSpecBuilder("Patient Demographics", scan_id=analysis.id)
+builder = TransformSpecBuilder("Patient Demographics", analysis_id=analysis.id)
 builder.add_field("Patient", "Patient.name.family", "String", name="LastName", length=50)
 builder.add_field("Patient", "Patient.gender", "String", name="Gender", length=10, index=True)
 

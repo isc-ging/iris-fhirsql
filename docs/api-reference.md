@@ -41,14 +41,14 @@ Attributes: `credentials`, `repositories`, `analysis`, `transform_specs`, `proje
 ## TransformSpecBuilder
 
 ```python
-TransformSpecBuilder(name, scan_id, description="")
+TransformSpecBuilder(name, analysis_id, description="")
 ```
 
 Full guidance: [Transform specs and subtables](transform-specs.md).
 
 ### Properties
 
-`name`, `scan_id`, `description`, `resources` (the list of resource dicts, live not a copy).
+`name`, `analysis_id`, `description`, `resources` (the list of resource dicts, live not a copy).
 
 ### Methods
 
@@ -113,7 +113,7 @@ or any IRIS type name passed through unvalidated.
 |--------|---------|-------------|
 | `list()` | `list[TransformSpec]` | |
 | `get(spec_id)` | `TransformSpec` | |
-| `create(name, scan_id, resources, description="")` | `TransformSpec` | `resources` is the raw list. Must be non-empty; each resource needs columns, or subtables with columns |
+| `create(name, analysis_id, resources, description="")` | `TransformSpec` | `resources` is the raw list. Must be non-empty; each resource needs columns, or subtables with columns |
 | `create_from_builder(builder)` | `TransformSpec` | Preferred. Sends `builder.to_dict()["resources"]` |
 | `update(spec)` | `TransformSpec` | `spec.id` is required |
 | `delete(spec_id)` | `bool` | |
@@ -143,7 +143,7 @@ Dataclasses in `iris_fhirsql.models`, translating snake_case fields to the API's
 | `Credential` | `id`, `system_name`, `username`, `password` |
 | `Repository` | `id`, `name`, `hostname`, `port`, `repository_url`, `credentials_id`, `ssl_config` |
 | `Analysis` | `id`, `fhir_repository_id`, `max_distinct`, `selectivity_percentage`, `status` |
-| `TransformSpec` | `id`, `name`, `scan_id`, `spec_data` (the raw payload) |
+| `TransformSpec` | `id`, `name`, `analysis_id`, `spec_data` (the raw payload) |
 | `Projection` | `id`, `name`, `spec_id`, `fhir_repository_id`, `package_name`, `users`, `status` |
 | `FHIRServer` | `namespace`, `csp_url`, `fhir_version`, `web_port`, `is_enabled`, `name` |
 

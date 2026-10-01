@@ -12,7 +12,7 @@ class TransformSpecResource(BaseResource):
         data = self._make_request("GET", "/transformspec", params={"ID": spec_id})
         return TransformSpec.from_dict(data)
 
-    def create(self, name: str, scan_id: int, resources: List[Dict[str, Any]],
+    def create(self, name: str, analysis_id: int, resources: List[Dict[str, Any]],
                description: str = "") -> TransformSpec:
         """
         Create a transformation specification defining FHIR-to-SQL field mappings.
@@ -23,7 +23,7 @@ class TransformSpecResource(BaseResource):
 
         Args:
             name: Display name for the specification
-            scan_id: Analysis ID (from Analysis.id) providing resource schema
+            analysis_id: Analysis ID (from Analysis.id) providing resource schema
             resources: List of {"resourceType": ..., "columns": [...]} mappings.
                        Must be non-empty: the server rejects specs without resources.
             description: Optional description
@@ -32,14 +32,14 @@ class TransformSpecResource(BaseResource):
             TransformSpec: Created specification object
 
         Example:
-            builder = TransformSpecBuilder("Patient Demographics", scan_id=analysis.id)
+            builder = TransformSpecBuilder("Patient Demographics", analysis_id=analysis.id)
             builder.add_field("Patient", "Patient.gender", "String", name="Gender", length=10)
             spec = client.transform_specs.create_from_builder(builder)
         """
         if not name:
             raise ValidationError("name required")
-        if not scan_id:
-            raise ValidationError("scan_id required")
+        if not analysis_id:
+            raise ValidationError("analysis_id required")
         if not resources:
             raise ValidationError("resources required: add at least one field to the spec")
         for resource in resources:
@@ -48,7 +48,7 @@ class TransformSpecResource(BaseResource):
                 raise ValidationError(
                     f"resource '{resource['resourceType']}' has no columns or subtable columns")
 
-        payload = {"name": name, "scanId": scan_id, "description": description,
+        payload = {"name": name, "scanId": analysis_id, "description": description,
                    "resources": resources}
         data = self._make_request("POST", "/transformspec", json=payload)
 
@@ -59,7 +59,7 @@ class TransformSpecResource(BaseResource):
         return TransformSpec.from_dict(max(matches, key=lambda item: item["id"]))
 
     def create_from_builder(self, builder) -> TransformSpec:
-        return self.create(builder.name, builder.scan_id, builder.to_dict()["resources"],
+        return self.create(builder.name, builder.analysis_id, builder.to_dict()["resources"],
                            builder.description)
 
     def update(self, spec: TransformSpec) -> TransformSpec:

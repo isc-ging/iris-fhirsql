@@ -63,7 +63,7 @@ print("   Analysis complete!\n")
 # Step 4: Define field mappings and create the Transformation Specification
 # Paths are full FHIRPath expressions; types match the analysis ("String", "Number", "Boolean")
 print("4. Creating transformation specification...")
-builder = TransformSpecBuilder("SQLBuilderTransformation", scan_id=analysis.id)
+builder = TransformSpecBuilder("SQLBuilderTransformation", analysis_id=analysis.id)
 
 builder.add_field("Patient", "Patient.name.family", "String", name="LastName", length=50)
 builder.add_field("Patient", "Patient.name.given", "String", name="FirstName", length=50)

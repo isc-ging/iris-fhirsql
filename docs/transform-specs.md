@@ -51,7 +51,7 @@ You normally never write this by hand. `builder.to_json()` prints it.
 ```python
 from iris_fhirsql import TransformSpecBuilder
 
-builder = TransformSpecBuilder("Patient Demographics", scan_id=analysis.id)
+builder = TransformSpecBuilder("Patient Demographics", analysis_id=analysis.id)
 
 builder.add_field("Patient", "Patient.name.family", "String", name="LastName", length=50)
 builder.add_field("Patient", "Patient.name.given",  "String", name="FirstName", length=50)
@@ -74,7 +74,7 @@ builder.add_field("Patient", "Patient.birthDate",   "String", name="BirthDate", 
 All builder methods return the builder, so calls can be chained:
 
 ```python
-(TransformSpecBuilder("Obs", scan_id=analysis.id)
+(TransformSpecBuilder("Obs", analysis_id=analysis.id)
     .add_field("Observation", "Observation.status", "String", name="Status", length=10)
     .add_field("Observation", "Observation.subject.reference", "String", name="Patient", length=50, index=True))
 ```
@@ -125,7 +125,7 @@ builder.remove_subtable_field(resource_type, subtable, name)
 ### Example: one row per address
 
 ```python
-builder = TransformSpecBuilder("Patient With Addresses", scan_id=analysis.id)
+builder = TransformSpecBuilder("Patient With Addresses", analysis_id=analysis.id)
 
 # Patient table: one row per patient
 builder.add_field("Patient", "Patient.name.family", "String", name="LastName", length=50)
@@ -161,7 +161,7 @@ builder.add_subtable_field("Patient", "PatientAddress", "Patient.address.city", 
 ### Several subtables on one resource
 
 ```python
-builder = TransformSpecBuilder("Patient Contact Details", scan_id=analysis.id)
+builder = TransformSpecBuilder("Patient Contact Details", analysis_id=analysis.id)
 builder.add_field("Patient", "Patient.name.family", "String", name="LastName", length=50)
 
 builder.add_subtable("Patient", "PatientAddress", path="Patient.address")
@@ -182,7 +182,7 @@ A resource does not need columns of its own. A spec whose only content is subtab
 parent table is still created (with just the system columns):
 
 ```python
-builder = TransformSpecBuilder("Addresses Only", scan_id=analysis.id)
+builder = TransformSpecBuilder("Addresses Only", analysis_id=analysis.id)
 builder.add_subtable("Patient", "PatientAddress", path="Patient.address")
 builder.add_subtable_field("Patient", "PatientAddress", "city", "String", name="City", length=50)
 ```
@@ -270,7 +270,7 @@ builder.to_dict()      # deep copy of the payload
 builder.to_json()      # pretty printed string
 ```
 
-Properties: `builder.name`, `builder.scan_id`, `builder.description`, `builder.resources`.
+Properties: `builder.name`, `builder.analysis_id`, `builder.description`, `builder.resources`.
 
 `load` and `from_dict` require `name`, `scanId`, `description` and `resources` and raise `KeyError` if any is
 missing.

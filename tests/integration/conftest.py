@@ -110,7 +110,7 @@ def workflow(client, fhir_server_ready):
             step(f"analysis status: {analysis.status}")
 
         step("transform spec")
-        builder = TransformSpecBuilder(f"CISpec{run}", scan_id=analysis.id)
+        builder = TransformSpecBuilder(f"CISpec{run}", analysis_id=analysis.id)
         builder.add_field("Patient", "Patient.name.family", "String", name="FamilyName", length=50)
         builder.add_field("Patient", "Patient.gender", "String", name="Gender", length=10)
         builder.add_subtable("Patient", "PatientAddress", path="Patient.address")

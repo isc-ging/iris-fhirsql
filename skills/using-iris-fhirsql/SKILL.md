@@ -39,7 +39,7 @@ while analysis.status != "completed":           # "running" -> "completed"
     time.sleep(5)
     analysis = client.analysis.get(analysis.id)
 
-b = TransformSpecBuilder("MySpec", scan_id=analysis.id)
+b = TransformSpecBuilder("MySpec", analysis_id=analysis.id)
 b.add_field("Patient", "Patient.name.family", "String", name="LastName", length=50)
 b.add_field("Patient", "Patient.gender", "String", name="Gender", length=10, index=True)
 spec = client.transform_specs.create_from_builder(b)

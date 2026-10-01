@@ -59,7 +59,7 @@ while analysis.status != "completed":
 
 # Step 4: Build field mappings: (FHIRPath, type, column name, length)
 print("\nStep 4: Building field mappings...")
-builder = TransformSpecBuilder("Patient Demographics", scan_id=analysis.id)
+builder = TransformSpecBuilder("Patient Demographics", analysis_id=analysis.id)
 fields_to_add = [
     ("Patient.name.family", "String", "FamilyName", 50),
     ("Patient.name.given", "String", "GivenName", 50),

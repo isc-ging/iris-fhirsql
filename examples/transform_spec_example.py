@@ -56,7 +56,7 @@ while analysis.status != "completed":
 
 # Step 4: Build transform spec using TransformSpecBuilder
 print("\nStep 4: Building transform spec with TransformSpecBuilder...")
-builder = TransformSpecBuilder("Clinical Data Warehouse", scan_id=analysis.id)
+builder = TransformSpecBuilder("Clinical Data Warehouse", analysis_id=analysis.id)
 
 # Add Patient resource with demographics: (path, type, column name, length)
 patient_fields = [

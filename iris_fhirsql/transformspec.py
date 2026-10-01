@@ -10,21 +10,21 @@ class TransformSpecBuilder:
     {"name", "scanId", "description", "resources": [{"resourceType", "columns": [...]}]}
 
     Example:
-        builder = TransformSpecBuilder("Patient Demographics", scan_id=analysis.id)
+        builder = TransformSpecBuilder("Patient Demographics", analysis_id=analysis.id)
         builder.add_field("Patient", "Patient.name.family", "String", name="FamilyName", length=50)
         builder.add_field("Patient", "Patient.gender", "String", name="Gender", length=10, index=True)
         spec = client.transform_specs.create_from_builder(builder)
     """
 
-    def __init__(self, name: str, scan_id: int, description: str = ""):
-        self.spec = {"name": name, "scanId": scan_id, "description": description, "resources": []}
+    def __init__(self, name: str, analysis_id: int, description: str = ""):
+        self.spec = {"name": name, "scanId": analysis_id, "description": description, "resources": []}
 
     @property
     def name(self) -> str:
         return self.spec["name"]
 
     @property
-    def scan_id(self) -> int:
+    def analysis_id(self) -> int:
         return self.spec["scanId"]
 
     @property

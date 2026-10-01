@@ -89,7 +89,7 @@ class Analysis:
 class TransformSpec:
     id: Optional[str] = None
     name: Optional[str] = None
-    scan_id: Optional[int] = None
+    analysis_id: Optional[int] = None
     spec_data: Optional[Dict] = None  # Should contain 'resources' array with {resourceType, columns[]}
 
     def to_dict(self):
@@ -98,8 +98,8 @@ class TransformSpec:
             data["id"] = self.id
         if self.name:
             data["name"] = self.name
-        if self.scan_id:
-            data["scanId"] = self.scan_id
+        if self.analysis_id:
+            data["scanId"] = self.analysis_id
         if self.spec_data:
             data.update(self.spec_data)
         return data
@@ -109,7 +109,7 @@ class TransformSpec:
         return cls(
             id=data.get("id") or data.get("SPECID"),
             name=data.get("name"),
-            scan_id=data.get("scanId"),
+            analysis_id=data.get("scanId"),
             spec_data=data
         )
 

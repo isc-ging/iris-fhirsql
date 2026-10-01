@@ -47,7 +47,7 @@ while analysis.status != "completed":
     analysis = client.analysis.get(analysis.id)
     print("analysis:", analysis.status)
 
-builder = TransformSpecBuilder("CookbookFlat", scan_id=analysis.id)
+builder = TransformSpecBuilder("CookbookFlat", analysis_id=analysis.id)
 builder.add_field("Patient", "Patient.name.family", "String", name="LastName", length=50)
 builder.add_field("Patient", "Patient.name.given",  "String", name="FirstName", length=50)
 builder.add_field("Patient", "Patient.gender",      "String", name="Gender", length=10, index=True)
@@ -74,7 +74,7 @@ SELECT TOP 10 LastName, FirstName, Gender, BirthDate FROM cookbookflat.Patient
 addresses loses all but a flattened value. A subtable keeps every repetition as its own row.
 
 ```python
-builder = TransformSpecBuilder("CookbookAddress", scan_id=analysis.id)
+builder = TransformSpecBuilder("CookbookAddress", analysis_id=analysis.id)
 
 builder.add_field("Patient", "Patient.name.family", "String", name="LastName", length=50)
 
@@ -122,7 +122,7 @@ Each repeating element gets its own subtable. Every table name in the spec must 
 case-insensitively.
 
 ```python
-builder = TransformSpecBuilder("CookbookContacts", scan_id=analysis.id)
+builder = TransformSpecBuilder("CookbookContacts", analysis_id=analysis.id)
 
 builder.add_field("Patient", "Patient.gender", "String", name="Gender", length=10)
 builder.add_field("Patient", "Patient.birthDate", "String", name="BirthDate", length=10)
@@ -160,7 +160,7 @@ projection fault.
 Project the referencing column as a real column, index it, and join on the other table's `Key`.
 
 ```python
-builder = TransformSpecBuilder("CookbookClinical", scan_id=analysis.id)
+builder = TransformSpecBuilder("CookbookClinical", analysis_id=analysis.id)
 
 builder.add_field("Patient", "Patient.name.family", "String", name="FamilyName", length=50)
 builder.add_field("Patient", "Patient.birthDate",   "String", name="BirthDate", length=10)
@@ -191,7 +191,7 @@ so on to the same builder. Just make sure the subtable name does not equal `Pati
 `Number` maps to `%Integer` and rounds. Use `%Numeric` for anything with a fractional part.
 
 ```python
-builder = TransformSpecBuilder("CookbookNumbers", scan_id=analysis.id)
+builder = TransformSpecBuilder("CookbookNumbers", analysis_id=analysis.id)
 builder.add_field("Observation", "Observation.valueQuantity.value", "Number",   name="ValueRounded")
 builder.add_field("Observation", "Observation.valueQuantity.value", "%Numeric", name="ValueExact")
 ```
@@ -207,7 +207,7 @@ builder.save("cookbook_contacts_spec.json")
 
 # later, or on another machine
 loaded = TransformSpecBuilder.load("cookbook_contacts_spec.json")
-print(loaded.name, loaded.scan_id, [r["resourceType"] for r in loaded.resources])
+print(loaded.name, loaded.analysis_id, [r["resourceType"] for r in loaded.resources])
 ```
 
 Specs are tied to the analysis in `scanId`. To apply a saved spec to a different repository, analyse that
@@ -316,7 +316,7 @@ except ValidationError as e:
 
 # Caught by the client, before any request
 try:
-    client.transform_specs.create_from_builder(TransformSpecBuilder("Empty", scan_id=analysis.id))
+    client.transform_specs.create_from_builder(TransformSpecBuilder("Empty", analysis_id=analysis.id))
 except ValidationError as e:
     print("bad spec:", e)      # resources required
 

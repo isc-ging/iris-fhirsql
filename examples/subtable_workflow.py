@@ -51,7 +51,7 @@ while analysis.status != "completed":
     log(f"   analysis status: {analysis.status}")
 
 log("4. transform spec")
-builder = TransformSpecBuilder("SubtableDemo", scan_id=analysis.id)
+builder = TransformSpecBuilder("SubtableDemo", analysis_id=analysis.id)
 builder.add_field("Patient", "Patient.name.family", "String", name="FamilyName", length=50)
 builder.add_field("Patient", "Patient.gender", "String", name="Gender", length=10)
 

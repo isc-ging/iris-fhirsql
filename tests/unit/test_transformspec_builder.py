@@ -5,7 +5,7 @@ from iris_fhirsql import FHIRSQLClient, TransformSpecBuilder, ValidationError
 
 
 def make_builder():
-    return TransformSpecBuilder("Spec", scan_id=1, description="d")
+    return TransformSpecBuilder("Spec", analysis_id=1, description="d")
 
 
 def test_add_field_builds_column():
