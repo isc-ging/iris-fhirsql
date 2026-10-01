@@ -4,7 +4,7 @@ Complete FHIR SQL Builder workflow example.
 This demonstrates the full workflow from the InterSystems article:
 https://community.intersystems.com/post/fhir-sql-builder-step-step
 """
-from fhirsql import FHIRSQLClient, TransformSpecBuilder
+from iris_fhirsql import FHIRSQLClient, TransformSpecBuilder
 import time
 
 # Initialize client - credentials from env vars IRISUSERNAME and IRISPASSWORD

@@ -4,7 +4,7 @@ Keep committing your work!
 
 ## What this is
 
-`fhirsql` is a Python client wrapping the InterSystems FHIR SQL Builder (FSB) REST API (`HS.HC.FHIRSQL`, served at `/csp/fhirsql/api/ui`). It drives the FSB workflow programmatically: credentials -> FHIR repository -> analysis -> transformation spec -> projection (generated SQL schema). Background: https://community.intersystems.com/post/fhir-sql-builder-step-step
+`iris-fhirsql` (import package `iris_fhirsql`) is a Python client wrapping the InterSystems FHIR SQL Builder (FSB) REST API (`HS.HC.FHIRSQL`, served at `/csp/fhirsql/api/ui`). It drives the FSB workflow programmatically: credentials -> FHIR repository -> analysis -> transformation spec -> projection (generated SQL schema). Background: https://community.intersystems.com/post/fhir-sql-builder-step-step
 
 ## Commands
 
@@ -39,10 +39,10 @@ docker compose -f docker-compose.ci.yml down -v
 
 ## Architecture
 
-- `fhirsql/client.py` - `FHIRSQLClient` holds a `requests.Session` (basic auth, JSON headers) and `base_url`, and exposes one resource manager per FSB entity: `credentials`, `repositories`, `analysis`, `transform_specs`, `projections`.
-- `fhirsql/resources/base.py` - `BaseResource._make_request` builds URL from `client.base_url + path`, raises `APIError` on status >= 400. All resource managers subclass this.
-- `fhirsql/models.py` - dataclasses with `to_dict()` / `from_dict()` translating snake_case Python fields to the API's camelCase JSON (e.g. `repository_url` <-> `repositoryURL`, `spec_id` <-> `specificationId`).
-- `fhirsql/transformspec.py` - `TransformSpecBuilder`, local builder for spec JSON with file save/load.
+- `iris_fhirsql/client.py` - `FHIRSQLClient` holds a `requests.Session` (basic auth, JSON headers) and `base_url`, and exposes one resource manager per FSB entity: `credentials`, `repositories`, `analysis`, `transform_specs`, `projections`.
+- `iris_fhirsql/resources/base.py` - `BaseResource._make_request` builds URL from `client.base_url + path`, raises `APIError` on status >= 400. All resource managers subclass this.
+- `iris_fhirsql/models.py` - dataclasses with `to_dict()` / `from_dict()` translating snake_case Python fields to the API's camelCase JSON (e.g. `repository_url` <-> `repositoryURL`, `spec_id` <-> `specificationId`).
+- `iris_fhirsql/transformspec.py` - `TransformSpecBuilder`, local builder for spec JSON with file save/load.
 - `Specifications/FHIR/SetupRequestBodies/*.body` - real captured request bodies for each FSB endpoint. Use these as ground truth for payload shapes.
 
 ### FHIR server discovery (DB API, not REST)

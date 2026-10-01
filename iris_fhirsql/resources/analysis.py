@@ -1,7 +1,7 @@
 from typing import List, Optional, Dict, Any
-from fhirsql.resources.base import BaseResource
-from fhirsql.models import Analysis
-from fhirsql.exceptions import ValidationError
+from iris_fhirsql.resources.base import BaseResource
+from iris_fhirsql.models import Analysis
+from iris_fhirsql.exceptions import ValidationError
 
 class AnalysisResource(BaseResource):
     def list(self) -> List[Analysis]:

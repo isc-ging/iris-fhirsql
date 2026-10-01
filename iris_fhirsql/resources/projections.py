@@ -1,7 +1,7 @@
 from typing import List, Optional
-from fhirsql.resources.base import BaseResource
-from fhirsql.models import Projection
-from fhirsql.exceptions import ValidationError
+from iris_fhirsql.resources.base import BaseResource
+from iris_fhirsql.models import Projection
+from iris_fhirsql.exceptions import ValidationError
 
 class ProjectionResource(BaseResource):
     def list(self) -> List[Projection]:

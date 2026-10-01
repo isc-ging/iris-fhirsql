@@ -5,7 +5,7 @@ This shows how to handle Docker port mapping where:
 - External port (what you connect to): 32783
 - Internal port (what FHIR runs on inside container): 52773
 """
-from fhirsql import FHIRSQLClient
+from iris_fhirsql import FHIRSQLClient
 
 # Client connects to the EXTERNAL mapped port (32783)
 client = FHIRSQLClient(

@@ -1,7 +1,7 @@
 from typing import List, Optional
-from fhirsql.resources.base import BaseResource
-from fhirsql.models import Credential
-from fhirsql.exceptions import ValidationError
+from iris_fhirsql.resources.base import BaseResource
+from iris_fhirsql.models import Credential
+from iris_fhirsql.exceptions import ValidationError
 
 class CredentialResource(BaseResource):
     def list(self) -> List[Credential]:

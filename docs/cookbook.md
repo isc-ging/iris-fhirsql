@@ -4,7 +4,7 @@ Complete usage examples, from smallest to largest. Every recipe assumes:
 
 ```python
 import time
-from fhirsql import FHIRSQLClient, TransformSpecBuilder
+from iris_fhirsql import FHIRSQLClient, TransformSpecBuilder
 
 client = FHIRSQLClient(hostname="localhost", port=32783, superserver_port=32782)   # IRISUSERNAME/IRISPASSWORD set
 ```
@@ -301,7 +301,7 @@ are gone if you need a clean namespace; this client does not check.
 ## 10. Handling errors
 
 ```python
-from fhirsql import ValidationError, APIError
+from iris_fhirsql import ValidationError, APIError
 
 # Caught by the builder, before any request
 try:

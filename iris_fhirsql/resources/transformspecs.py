@@ -1,7 +1,7 @@
 from typing import List, Dict, Any
-from fhirsql.resources.base import BaseResource
-from fhirsql.models import TransformSpec
-from fhirsql.exceptions import ValidationError
+from iris_fhirsql.resources.base import BaseResource
+from iris_fhirsql.models import TransformSpec
+from iris_fhirsql.exceptions import ValidationError
 
 class TransformSpecResource(BaseResource):
     def list(self) -> List[TransformSpec]:

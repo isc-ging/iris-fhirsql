@@ -1,6 +1,6 @@
 from typing import Optional, Dict, Any
 from urllib.parse import urlencode
-from fhirsql.exceptions import APIError
+from iris_fhirsql.exceptions import APIError
 
 class BaseResource:
     def __init__(self, client):

@@ -49,7 +49,7 @@ You normally never write this by hand. `builder.to_json()` prints it.
 ## Resource tables
 
 ```python
-from fhirsql import TransformSpecBuilder
+from iris_fhirsql import TransformSpecBuilder
 
 builder = TransformSpecBuilder("Patient Demographics", scan_id=analysis.id)
 

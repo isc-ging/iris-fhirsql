@@ -5,9 +5,9 @@ try:
 except ImportError:
     # Optional dependency: only FHIR server discovery (DB API) needs it.
     iris = None
-from fhirsql.resources.base import BaseResource
-from fhirsql.models import Repository, FHIRServer
-from fhirsql.exceptions import ValidationError
+from iris_fhirsql.resources.base import BaseResource
+from iris_fhirsql.models import Repository, FHIRServer
+from iris_fhirsql.exceptions import ValidationError
 
 class RepositoryResource(BaseResource):
     def list(self) -> List[Repository]:

@@ -11,7 +11,7 @@ healthcare data scenarios with Patient and Observation resources.
 """
 
 import time
-from fhirsql import FHIRSQLClient, TransformSpecBuilder
+from iris_fhirsql import FHIRSQLClient, TransformSpecBuilder
 
 # Initialize client (credentials from environment variables)
 client = FHIRSQLClient(

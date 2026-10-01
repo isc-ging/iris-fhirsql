@@ -11,7 +11,7 @@ This example demonstrates the complete workflow:
 """
 
 import time
-from fhirsql import FHIRSQLClient, TransformSpecBuilder
+from iris_fhirsql import FHIRSQLClient, TransformSpecBuilder
 
 # Username and password will be read from IRISUSERNAME and IRISPASSWORD env vars if not provided
 client = FHIRSQLClient(

@@ -1,6 +1,6 @@
 # User Guide
 
-`fhirsql` is a Python client for the InterSystems FHIR SQL Builder (FSB) REST API (`HS.HC.FHIRSQL`, served at
+`iris-fhirsql` (import package `iris_fhirsql`) is a Python client for the InterSystems FHIR SQL Builder (FSB) REST API (`HS.HC.FHIRSQL`, served at
 `/csp/fhirsql/api/ui`). It lets you drive the whole FSB workflow from code and end up with plain SQL tables
 projected from the resources in a FHIR repository.
 
@@ -56,7 +56,7 @@ Two ideas matter most when designing a spec:
 ## Connecting
 
 ```python
-from fhirsql import FHIRSQLClient
+from iris_fhirsql import FHIRSQLClient
 
 # Credentials from the IRISUSERNAME and IRISPASSWORD environment variables
 client = FHIRSQLClient(hostname="localhost", port=52773)
@@ -144,7 +144,7 @@ analysis output, which lists the resources and paths available to map.
 ### 4. Transform spec
 
 ```python
-from fhirsql import TransformSpecBuilder
+from iris_fhirsql import TransformSpecBuilder
 
 builder = TransformSpecBuilder("Patient Demographics", scan_id=analysis.id)
 builder.add_field("Patient", "Patient.name.family", "String", name="LastName", length=50)
@@ -209,7 +209,7 @@ All exceptions derive from `FHIRSQLError`:
 | `AuthenticationError`, `ResourceNotFoundError` | Defined for callers; the resource managers currently surface these as `APIError` |
 
 ```python
-from fhirsql import ValidationError, APIError
+from iris_fhirsql import ValidationError, APIError
 
 try:
     builder.add_subtable_field("Patient", "PatientAddress", "Patient.address.city", "String", name="City")

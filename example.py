@@ -1,4 +1,4 @@
-from fhirsql import FHIRSQLClient
+from iris_fhirsql import FHIRSQLClient
 
 client = FHIRSQLClient(
     host="localhost",

@@ -2,8 +2,8 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from fhirsql.exceptions import ValidationError
-from fhirsql.resources.analysis import AnalysisResource
+from iris_fhirsql.exceptions import ValidationError
+from iris_fhirsql.resources.analysis import AnalysisResource
 
 
 def _resource():

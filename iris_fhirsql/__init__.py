@@ -2,9 +2,9 @@
 
 __version__ = "0.1.0"
 
-from fhirsql.client import FHIRSQLClient
-from fhirsql.transformspec import TransformSpecBuilder
-from fhirsql.exceptions import (
+from iris_fhirsql.client import FHIRSQLClient
+from iris_fhirsql.transformspec import TransformSpecBuilder
+from iris_fhirsql.exceptions import (
     FHIRSQLError,
     AuthenticationError,
     ResourceNotFoundError,

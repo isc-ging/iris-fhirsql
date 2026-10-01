@@ -1,11 +1,11 @@
 import os
 import requests
 from typing import Optional
-from fhirsql.resources.credentials import CredentialResource
-from fhirsql.resources.repositories import RepositoryResource
-from fhirsql.resources.analysis import AnalysisResource
-from fhirsql.resources.transformspecs import TransformSpecResource
-from fhirsql.resources.projections import ProjectionResource
+from iris_fhirsql.resources.credentials import CredentialResource
+from iris_fhirsql.resources.repositories import RepositoryResource
+from iris_fhirsql.resources.analysis import AnalysisResource
+from iris_fhirsql.resources.transformspecs import TransformSpecResource
+from iris_fhirsql.resources.projections import ProjectionResource
 
 class FHIRSQLClient:
     """Client for HS.HC.FHIRSQL REST API.

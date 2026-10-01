@@ -3,7 +3,7 @@
 Back to the [user guide](guide.md).
 
 ```python
-from fhirsql import (FHIRSQLClient, TransformSpecBuilder,
+from iris_fhirsql import (FHIRSQLClient, TransformSpecBuilder,
                      FHIRSQLError, AuthenticationError, ResourceNotFoundError, ValidationError, APIError)
 ```
 
@@ -135,7 +135,7 @@ none matches.
 
 ## Models
 
-Dataclasses in `fhirsql.models`, translating snake_case fields to the API's camelCase JSON via `to_dict()` and
+Dataclasses in `iris_fhirsql.models`, translating snake_case fields to the API's camelCase JSON via `to_dict()` and
 `from_dict()`.
 
 | Model | Fields |

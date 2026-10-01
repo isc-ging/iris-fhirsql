@@ -1,4 +1,4 @@
-# FHIRSQL Python Client
+# iris-fhirsql
 
 Pythonic wrapper for HS.HC.FHIRSQL REST API - create SQL projections from complex FHIR data.
 
@@ -14,7 +14,7 @@ pip install intersystems-irispython   # optional: only needed for find_fhir_serv
 ## Quick Start
 
 ```python
-from fhirsql import FHIRSQLClient
+from iris_fhirsql import FHIRSQLClient
 
 # Client automatically reads IRISUSERNAME and IRISPASSWORD env vars
 client = FHIRSQLClient(hostname="localhost", port=52773)
@@ -83,7 +83,7 @@ Define how FHIR resources map to SQL columns. Each field needs a full FHIRPath
 (`String`, `Number`, `Boolean`) and a SQL column name:
 
 ```python
-from fhirsql import TransformSpecBuilder
+from iris_fhirsql import TransformSpecBuilder
 
 builder = TransformSpecBuilder("Patient Demographics", scan_id=analysis.id)
 builder.add_field("Patient", "Patient.name.family", "String", name="LastName", length=50)

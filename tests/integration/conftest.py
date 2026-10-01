@@ -18,7 +18,7 @@ import iris
 import pytest
 import requests
 
-from fhirsql import FHIRSQLClient, TransformSpecBuilder
+from iris_fhirsql import FHIRSQLClient, TransformSpecBuilder
 
 log = logging.getLogger(__name__)
 

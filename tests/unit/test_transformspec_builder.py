@@ -1,7 +1,7 @@
 """Unit tests for the local TransformSpecBuilder and client construction. No IRIS needed."""
 import pytest
 
-from fhirsql import FHIRSQLClient, TransformSpecBuilder, ValidationError
+from iris_fhirsql import FHIRSQLClient, TransformSpecBuilder, ValidationError
 
 
 def make_builder():

@@ -14,7 +14,7 @@ import time
 
 import iris
 
-from fhirsql import FHIRSQLClient, TransformSpecBuilder
+from iris_fhirsql import FHIRSQLClient, TransformSpecBuilder
 
 WEB_PORT = 32783          # mapped host port for the web server
 SUPERSERVER_PORT = 32782  # mapped host port for the superserver

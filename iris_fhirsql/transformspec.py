@@ -1,7 +1,7 @@
 import json
 from typing import Dict, Any, Optional, List
 from pathlib import Path
-from fhirsql.exceptions import ValidationError
+from iris_fhirsql.exceptions import ValidationError
 
 class TransformSpecBuilder:
     """Build transform specifications programmatically.
