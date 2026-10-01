@@ -11,6 +11,8 @@ description: Use when projecting FHIR resources as SQL tables with InterSystems 
 
 credentials (`system_name`) -> repository (`id`) -> analysis (`id`, once `completed`) -> transform spec (`id`) -> projection (SQL tables `<package_name>.<ResourceType>`)
 
+Install (not on PyPI yet): `pip install "iris-fhirsql[discovery] @ git+https://github.com/isc-ging/iris-fhirsql.git"` (drop `[discovery]` if not using `find_fhir_servers()`).
+
 ## Workflow
 
 ```python

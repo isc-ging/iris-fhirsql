@@ -6,9 +6,23 @@ Based on: [FHIR SQL Builder Step-by-Step](https://community.intersystems.com/pos
 
 ## Installation
 
+Not on PyPI yet. Install from GitHub:
+
 ```bash
-pip install -r requirements.txt
-pip install intersystems-irispython   # optional: only needed for find_fhir_servers()
+pip install git+https://github.com/isc-ging/iris-fhirsql.git
+
+# with the optional extra needed for find_fhir_servers()
+pip install "iris-fhirsql[discovery] @ git+https://github.com/isc-ging/iris-fhirsql.git"
+```
+
+Pin a branch, tag or commit by appending `@<ref>`, e.g. `git+https://github.com/isc-ging/iris-fhirsql.git@main`.
+
+From a local clone (editable, for development):
+
+```bash
+git clone https://github.com/isc-ging/iris-fhirsql.git
+cd iris-fhirsql
+pip install -e ".[discovery]"
 ```
 
 ## Quick Start
