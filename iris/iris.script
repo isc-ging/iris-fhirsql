@@ -33,7 +33,7 @@ SYS
  ;do $system.OBJ.LoadDir("/home/irisowner/dev/src/Setup","ck")
  ;do ##class(Setup.Roles).Run()
  do ##class(Setup.FSB).RunAll()
- ;do ##class(Setup.FSBRestRequest).RunAll()
+
 
  zpm "load /home/irisowner/dev/ -v"
 

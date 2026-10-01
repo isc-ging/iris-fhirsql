@@ -2,8 +2,6 @@
 
 Pythonic wrapper for HS.HC.FHIRSQL REST API - create SQL projections from complex FHIR data.
 
-Based on: [FHIR SQL Builder Step-by-Step](https://community.intersystems.com/post/fhir-sql-builder-step-step)
-
 ## Installation
 
 Not on PyPI yet. Install from GitHub:
