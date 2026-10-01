@@ -1,0 +1,23 @@
+# Container for automated tests. Separate from docker-compose.yml and from the dev
+# container iris-fhir, so it never clashes with them (different name and ports).
+#
+#   export FHIRSQL_PORT=42783 FHIRSQL_SUPERSERVER_PORT=42782
+#   docker compose -f docker-compose.ci.yml up -d --build --wait
+#   ... run pytest tests/integration ...
+#   docker compose -f docker-compose.ci.yml down -v
+services:
+  iris:
+    build:
+      context: ./ci
+    image: fhirsql-ci-iris:latest
+    container_name: iris-ci
+    ports:
+      - "${FHIRSQL_PORT:-42783}:52773"
+      - "${FHIRSQL_SUPERSERVER_PORT:-42782}:1972"
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "--user", "SuperUser", "--password", "SYS",
+             "--auth-no-challenge", "http://localhost:52773/api/atelier/"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 30s

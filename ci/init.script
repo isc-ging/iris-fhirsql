@@ -1,0 +1,13 @@
+ zn "%SYS"
+ do ##class(Security.Users).UnExpireUserPasswords("*")
+
+ // ---- fhir-server needs an interoperability-enabled namespace, so create one first ----
+ zn "HSLIB"
+ set tSC = ##class(HS.Util.Installer.Foundation).Install("FHIRSERVER")
+ if $system.Status.IsError(tSC) { write !,"INIT FAILED: Foundation install: ",$system.Status.GetErrorText(tSC),! halt }
+
+ // ---- Installs the FHIR server and sample data into FHIRSERVER ----
+ zn "FHIRSERVER"
+ zpm "install fhir-server"
+
+ halt
