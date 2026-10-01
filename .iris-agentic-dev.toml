@@ -8,7 +8,7 @@
 #   3. Enterprise standalone (intersystems/iris) — NOT supported, no Atelier REST available
 #
 # If you are using an enterprise-only image, see the two-container pattern below.
-container = "iris"
+container = "iris-fhir"
 
 # Default IRIS namespace
 namespace = "FHIRSERVER"

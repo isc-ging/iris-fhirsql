@@ -1,5 +1,5 @@
 services:
-  iris:
+  iris: # Do not use. Different container in use iris-fhir, same ports.
     build:
       context: ./iris
     container_name: iris
